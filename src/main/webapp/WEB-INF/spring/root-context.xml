@@ -20,4 +20,8 @@
 		http://localhost:8080/#forms and form.jsp for examples
 	-->
 	<bean id="requestDataValueProcessor" class="org.springframework.security.web.servlet.support.csrf.CsrfRequestDataValueProcessor"/>
+	
+	<bean id="rootContextBean" class="org.springframework.act.RootContextBean">
+	    <constructor-arg value="rootContextBeanForTest"></constructor-arg>
+	</bean>
 </beans>

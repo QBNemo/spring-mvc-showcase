@@ -854,6 +854,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * Exposes the DispatcherServlet-specific request attributes and delegates to {@link #doDispatch}
 	 * for the actual dispatching.
 	 */
+	/** Http请求处理的入口 */
 	@Override
 	protected void doService(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		if (logger.isDebugEnabled()) {
@@ -956,6 +957,7 @@ public class DispatcherServlet extends FrameworkServlet {
 				}
 
 				// Actually invoke the handler.
+				// HandlerAdapter调用Handler处理请求
 				mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
 
 				if (asyncManager.isConcurrentHandlingStarted()) {
@@ -1212,6 +1214,11 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * @param response current HTTP servlet response
 	 * @throws ServletException if view is missing or cannot be resolved
 	 * @throws Exception if there's a problem rendering the view
+	 */
+	/** 
+	 * 视图渲染，请求处理的最后一步 
+	 * {@link org.springframework.web.servlet.view.AbstractView#render(Map, HttpServletRequest, HttpServletResponse) }
+	 * InternalResourceView是AbstractView子类
 	 */
 	protected void render(ModelAndView mv, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// Determine locale for request and apply it to the response.

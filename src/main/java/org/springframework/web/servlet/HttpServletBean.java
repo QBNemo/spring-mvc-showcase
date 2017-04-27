@@ -115,7 +115,7 @@ public abstract class HttpServletBean extends HttpServlet
 	@Override
 	public final void init() throws ServletException {
 		if (logger.isDebugEnabled()) {
-			logger.debug("Initializing servlet '" + getServletName() + "'");
+			logger.debug("HttpServletBean Initializing servlet '" + getServletName() + "'");
 		}
 
 		// Set bean properties from init parameters.
@@ -136,7 +136,7 @@ public abstract class HttpServletBean extends HttpServlet
 		initServletBean();
 
 		if (logger.isDebugEnabled()) {
-			logger.debug("Servlet '" + getServletName() + "' configured successfully");
+			logger.debug("HttpServletBean Servlet '" + getServletName() + "' configured successfully");
 		}
 	}
 
