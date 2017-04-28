@@ -785,7 +785,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	 * @throws ServletException in case of an initialization exception
 	 */
 	protected void initFrameworkServlet() throws ServletException {
-		// 默认为空， 子类自定义
+		// NOOP
 	}
 
 	/**
