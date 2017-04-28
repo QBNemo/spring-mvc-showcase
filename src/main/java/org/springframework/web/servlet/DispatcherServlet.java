@@ -347,6 +347,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 */
 	public DispatcherServlet() {
 		super();
+		logger.error("Construct DispatcherServlet use a no-arg constructor");
 	}
 
 	/**
@@ -390,6 +391,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 */
 	public DispatcherServlet(WebApplicationContext webApplicationContext) {
 		super(webApplicationContext);
+		logger.error("Construct DispatcherServlet use a webApplicationContext");
 	}
 
 	/**

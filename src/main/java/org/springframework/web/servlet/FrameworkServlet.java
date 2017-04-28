@@ -233,6 +233,8 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	 * @see #FrameworkServlet(WebApplicationContext)
 	 */
 	public FrameworkServlet() {
+		// NOOP
+		logger.error("Construct FrameworkServlet use a no-arg constructor");
 	}
 
 	/**
@@ -277,6 +279,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	 */
 	public FrameworkServlet(WebApplicationContext webApplicationContext) {
 		this.webApplicationContext = webApplicationContext;
+		logger.error("Construct FrameworkServlet use a webApplicationContext");
 	}
 
 
@@ -523,7 +526,8 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		WebApplicationContext rootContext =
 				WebApplicationContextUtils.getWebApplicationContext(getServletContext());
 		WebApplicationContext wac = null;
-
+        
+		// 使用参数为webApplicationContext的构造器
 		if (this.webApplicationContext != null) {
 			// A context instance was injected at construction time -> use it
 			wac = this.webApplicationContext;
@@ -541,6 +545,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 				}
 			}
 		}
+		// 使用无参构造器
 		if (wac == null) {
 			// No context instance was injected at construction time -> see if one
 			// has been registered in the servlet context. If one exists, it is assumed
@@ -548,6 +553,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 			// user has performed any initialization such as setting the context id
 			wac = findWebApplicationContext();
 		}
+		// 自己创造一个WebApplicationContext
 		if (wac == null) {
 			// No context instance is defined for this servlet -> create a local one
 			wac = createWebApplicationContext(rootContext);

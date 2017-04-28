@@ -4,7 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public class RootContextBean {
-	private final Log logger = LogFactory.getLog(RootContextBean.class);
+    private static final Log logger = LogFactory.getLog(RootContextBean.class);
 	
     private String name;
 

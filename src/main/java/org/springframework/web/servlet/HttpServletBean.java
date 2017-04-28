@@ -118,8 +118,15 @@ public abstract class HttpServletBean extends HttpServlet
 			logger.debug("HttpServletBean Initializing servlet '" + getServletName() + "'");
 		}
 
+		// 传递web.xml配置的<init-param>给DispatcherServlet
+		ServletConfig sc = getServletConfig();
+		DispatcherServlet ds = null;
+		
 		// Set bean properties from init parameters.
 		try {
+			if(this instanceof DispatcherServlet) {
+				ds = (DispatcherServlet) this;
+			}
 			PropertyValues pvs = new ServletConfigPropertyValues(getServletConfig(), this.requiredProperties);
 			BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(this);
 			ResourceLoader resourceLoader = new ServletContextResourceLoader(getServletContext());
@@ -133,6 +140,7 @@ public abstract class HttpServletBean extends HttpServlet
 		}
 
 		// Let subclasses do whatever initialization they like.
+		// FrameworkServlet重写了该方法
 		initServletBean();
 
 		if (logger.isDebugEnabled()) {
@@ -149,6 +157,7 @@ public abstract class HttpServletBean extends HttpServlet
 	 * @see org.springframework.beans.BeanWrapper#registerCustomEditor
 	 */
 	protected void initBeanWrapper(BeanWrapper bw) throws BeansException {
+		// NOOP
 	}
 
 
@@ -181,6 +190,7 @@ public abstract class HttpServletBean extends HttpServlet
 	 * @throws ServletException if subclass initialization fails
 	 */
 	protected void initServletBean() throws ServletException {
+		// NOOP
 	}
 
 	/**
@@ -240,6 +250,7 @@ public abstract class HttpServletBean extends HttpServlet
 				Object value = config.getInitParameter(property);
 				addPropertyValue(new PropertyValue(property, value));
 				if (missingProps != null) {
+					// remove减少missingProps的成员，对requiredProperties无影响
 					missingProps.remove(property);
 				}
 			}

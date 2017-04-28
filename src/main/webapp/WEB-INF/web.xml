@@ -32,6 +32,11 @@
 			<param-name>contextConfigLocation</param-name>
 			<param-value>/WEB-INF/spring/appServlet/servlet-context.xml</param-value>
 		</init-param>
+		<!-- 非DispatcherServlet的bean属性，不会被用来给属性赋值  -->
+		<init-param>
+			<param-name>testServletParamName</param-name>
+			<param-value>testServletParamValue</param-value>
+		</init-param>
 		<load-on-startup>1</load-on-startup>
 		<async-supported>true</async-supported>
 	</servlet>
