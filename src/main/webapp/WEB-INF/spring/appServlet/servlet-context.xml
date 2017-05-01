@@ -40,6 +40,11 @@
 
 	<!-- Only needed because we require fileupload in the org.springframework.samples.mvc.fileupload package -->
 	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
+	
+	<!-- 先于mvcBeanAnno实例化 -->
+	<beans:bean id="mvcBeanXml" class="org.springframework.samples.mvc.MvcBean" >
+	    <beans:property name="mvcBeanName" value="mvcBeanXmled" />
+	</beans:bean>
 
 	<!-- Imports user-defined @Controller beans that process client requests -->
 	<beans:import resource="controllers.xml" />

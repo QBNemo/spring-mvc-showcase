@@ -234,7 +234,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	 */
 	public FrameworkServlet() {
 		// NOOP
-		logger.error("Construct FrameworkServlet use a no-arg constructor");
+		logger.error("FrameworkServlet constructor use no-arg");
 	}
 
 	/**
@@ -495,6 +495,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 
 		try {
 			this.webApplicationContext = initWebApplicationContext();
+			// NOOP
 			initFrameworkServlet();
 		}
 		catch (ServletException ex) {
@@ -523,7 +524,12 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	 * @see #setContextConfigLocation
 	 */
 	protected WebApplicationContext initWebApplicationContext() {
+		if (this.logger.isDebugEnabled()) {
+			this.logger.debug("FrameworkServlet '" + getServletName() + "': initWebApplicationContext");
+		}
+		
 		ServletContext sc = getServletContext();
+		// org.springframework.web.context.WebApplicationContext.ROOT
 		WebApplicationContext rootContext =
 				WebApplicationContextUtils.getWebApplicationContext(getServletContext());
 		WebApplicationContext wac = null;
@@ -546,7 +552,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 				}
 			}
 		}
-		// webApplicationContext已经存在于ServletContext
+		// webApplicationContext以contextAttribute属性存在于ServletContext
 		if (wac == null) {
 			// No context instance was injected at construction time -> see if one
 			// has been registered in the servlet context. If one exists, it is assumed
@@ -569,10 +575,11 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 
 		if (this.publishContext) {
 			// Publish the context as a servlet context attribute.
+			// "org.springframework.web.servlet.FrameworkServlet.CONTEXT." + getServletName()
 			String attrName = getServletContextAttributeName();
 			getServletContext().setAttribute(attrName, wac);
 			if (this.logger.isDebugEnabled()) {
-				this.logger.debug("Published WebApplicationContext of servlet '" + getServletName() +
+				this.logger.debug("FrameworkServlet Published WebApplicationContext of servlet '" + getServletName() +
 						"' as ServletContext attribute with name [" + attrName + "]");
 			}
 		}
@@ -652,6 +659,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 			}
 			else {
 				// Generate default id...
+				// 与WebApplicationContext。ROOT相比，多了ServletName
 				wac.setId(ConfigurableWebApplicationContext.APPLICATION_CONTEXT_ID_PREFIX +
 						ObjectUtils.getDisplayString(getServletContext().getContextPath()) + "/" + getServletName());
 			}
@@ -672,6 +680,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 
 		postProcessWebApplicationContext(wac);
 		applyInitializers(wac);
+		// 大量操作
 		wac.refresh();
 	}
 
@@ -811,6 +820,8 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	 */
 	public void onApplicationEvent(ContextRefreshedEvent event) {
 		this.refreshEventReceived = true;
+		ApplicationContext ctx = event.getApplicationContext();
+		// NOOP DispatcherServlet实现initStrategies(context);
 		onRefresh(event.getApplicationContext());
 	}
 

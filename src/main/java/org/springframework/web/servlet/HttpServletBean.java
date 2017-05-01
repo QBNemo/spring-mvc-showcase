@@ -92,6 +92,10 @@ public abstract class HttpServletBean extends HttpServlet
 
 	private ConfigurableEnvironment environment;
 
+	public HttpServletBean() {
+		// NOOP
+		logger.error("HttpServletBean constructor use no-arg");
+	}
 
 	/**
 	 * Subclasses can invoke this method to specify that this property
@@ -121,7 +125,6 @@ public abstract class HttpServletBean extends HttpServlet
 		// 传递web.xml配置的<init-param>给DispatcherServlet
 		ServletConfig sc = getServletConfig();
 		DispatcherServlet ds = null;
-		
 		// Set bean properties from init parameters.
 		try {
 			if(this instanceof DispatcherServlet) {
@@ -202,6 +205,7 @@ public abstract class HttpServletBean extends HttpServlet
 	public void setEnvironment(Environment environment) {
 		Assert.isInstanceOf(ConfigurableEnvironment.class, environment);
 		this.environment = (ConfigurableEnvironment) environment;
+		logger.error("HttpServletBean setEnvironment @" + environment.hashCode());
 	}
 
 	/**
@@ -238,6 +242,7 @@ public abstract class HttpServletBean extends HttpServlet
 		 * we can't accept default values
 		 * @throws ServletException if any required properties are missing
 		 */
+		/**  加入所有的InitParameter 如果requiredProperties未赋值就报异常 */
 		public ServletConfigPropertyValues(ServletConfig config, Set<String> requiredProperties)
 			throws ServletException {
 

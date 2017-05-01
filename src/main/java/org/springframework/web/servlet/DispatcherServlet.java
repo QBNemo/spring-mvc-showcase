@@ -35,7 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
+import org.springframework.act.RootContextBean;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -46,6 +46,7 @@ import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.springframework.http.server.ServletServerHttpRequest;
+import org.springframework.samples.mvc.MvcBean;
 import org.springframework.ui.context.ThemeSource;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
@@ -347,7 +348,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 */
 	public DispatcherServlet() {
 		super();
-		logger.error("Construct DispatcherServlet use a no-arg constructor");
+		logger.error("DispatcherServlet constructor use no-arg");
 	}
 
 	/**
@@ -391,7 +392,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 */
 	public DispatcherServlet(WebApplicationContext webApplicationContext) {
 		super(webApplicationContext);
-		logger.error("Construct DispatcherServlet use a webApplicationContext");
+		logger.error("DispatcherServlet constructor use a webApplicationContext");
 	}
 
 	/**
@@ -478,6 +479,14 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * <p>May be overridden in subclasses in order to initialize further strategy objects.
 	 */
 	protected void initStrategies(ApplicationContext context) {
+		Map<String, MvcBean> mvcbeans = BeanFactoryUtils.beansOfTypeIncludingAncestors(context, MvcBean.class, true, false);
+		Map<String, RootContextBean> rootbeans = BeanFactoryUtils.beansOfTypeIncludingAncestors(context, RootContextBean.class, true, false);
+		MvcBean anno = context.getBean("mvcBeanAnno", MvcBean.class);
+		MvcBean xml = context.getBean("mvcBeanXml", MvcBean.class);
+		// 如果没有，会继续去父容器查找
+		RootContextBean root = context.getBean(RootContextBean.class);
+		
+		logger.error("initStrategies start");
 		initMultipartResolver(context);
 		initLocaleResolver(context);
 		initThemeResolver(context);
@@ -487,6 +496,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		initRequestToViewNameTranslator(context);
 		initViewResolvers(context);
 		initFlashMapManager(context);
+		logger.error("initStrategies end");
 	}
 
 	/**

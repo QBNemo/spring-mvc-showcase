@@ -20,7 +20,9 @@ import java.util.List;
 import java.util.Properties;
 
 import org.w3c.dom.Element;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.act.RootContextBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -169,7 +171,12 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 	private static final boolean gsonPresent =
 			ClassUtils.isPresent("com.google.gson.Gson", AnnotationDrivenBeanDefinitionParser.class.getClassLoader());
 
-
+    private static final Log logger = LogFactory.getLog(AnnotationDrivenBeanDefinitionParser.class);
+    
+    public AnnotationDrivenBeanDefinitionParser() {
+    	logger.error("AnnotationDrivenBeanDefinitionParser construct use no-arg");
+    }
+	
 	@Override
 	public BeanDefinition parse(Element element, ParserContext parserContext) {
 		Object source = parserContext.extractSource(element);

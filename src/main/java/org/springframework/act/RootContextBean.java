@@ -9,11 +9,12 @@ public class RootContextBean {
     private String name;
 
     public RootContextBean() {	
+    	logger.error("RootContextBean construct with no-arg");
     }
     
     public RootContextBean(String name) {
     	this.name = name;
-    	logger.error("Construct RootContextBean with name : " + name);
+    	logger.error("RootContextBean construct use name: " + name);
     }
     
 	public String getName() {
@@ -22,5 +23,6 @@ public class RootContextBean {
 
 	public void setName(String name) {
 		this.name = name;
+		logger.error("RootContextBean setName: " + name);
 	}    
 }
