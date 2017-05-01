@@ -19,7 +19,8 @@ package org.springframework.web.servlet.config;
 import java.util.Map;
 
 import org.w3c.dom.Element;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConstructorArgumentValues;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
@@ -58,7 +59,11 @@ class ViewControllerBeanDefinitionParser implements BeanDefinitionParser {
 	private static final String HANDLER_MAPPING_BEAN_NAME =
 		"org.springframework.web.servlet.config.viewControllerHandlerMapping";
 
-
+	private static final Log logger = LogFactory.getLog(ViewControllerBeanDefinitionParser.class);
+    public ViewControllerBeanDefinitionParser() {
+    	logger.error("ViewControllerBeanDefinitionParser construct use no-arg");
+    }
+    
 	@Override
 	@SuppressWarnings("unchecked")
 	public BeanDefinition parse(Element element, ParserContext parserContext) {
