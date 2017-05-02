@@ -479,12 +479,15 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * <p>May be overridden in subclasses in order to initialize further strategy objects.
 	 */
 	protected void initStrategies(ApplicationContext context) {
+		/*
+		// 这一段代码无法通过测试 仅仅供调试
 		Map<String, MvcBean> mvcbeans = BeanFactoryUtils.beansOfTypeIncludingAncestors(context, MvcBean.class, true, false);
 		Map<String, RootContextBean> rootbeans = BeanFactoryUtils.beansOfTypeIncludingAncestors(context, RootContextBean.class, true, false);
 		MvcBean anno = context.getBean("mvcBeanAnno", MvcBean.class);
 		MvcBean xml = context.getBean("mvcBeanXml", MvcBean.class);
 		// 如果没有，会继续去父容器查找
 		RootContextBean root = context.getBean(RootContextBean.class);
+		*/
 		
 		logger.error("initStrategies start");
 		initMultipartResolver(context);
