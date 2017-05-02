@@ -36,6 +36,7 @@ import org.springframework.web.servlet.LocaleContextResolver;
  * @see #setDefaultLocale
  * @see #setDefaultTimeZone
  */
+// LocaleContextResolver取代LocaleResolver
 public abstract class AbstractLocaleContextResolver extends AbstractLocaleResolver implements LocaleContextResolver {
 
 	private TimeZone defaultTimeZone;
@@ -58,11 +59,13 @@ public abstract class AbstractLocaleContextResolver extends AbstractLocaleResolv
 
 	@Override
 	public Locale resolveLocale(HttpServletRequest request) {
+		// 自身未实现
 		return resolveLocaleContext(request).getLocale();
 	}
 
 	@Override
 	public void setLocale(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+		// 自身未实现
 		setLocaleContext(request, response, (locale != null ? new SimpleLocaleContext(locale) : null));
 	}
 

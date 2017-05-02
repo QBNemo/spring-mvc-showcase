@@ -975,6 +975,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		long startTime = System.currentTimeMillis();
 		Throwable failureCause = null;
 
+		// LocaleContextHolder.getLocale()返回非null，有default值。而LocaleContext.getLocal()有可能返回null
 		LocaleContext previousLocaleContext = LocaleContextHolder.getLocaleContext();
 		LocaleContext localeContext = buildLocaleContext(request);
 
@@ -1126,6 +1127,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	 * @see javax.servlet.http.HttpServlet#doGet
 	 * @see javax.servlet.http.HttpServlet#doPost
 	 */
+	// 模板方法 DispatcherServlet具体实现
 	protected abstract void doService(HttpServletRequest request, HttpServletResponse response)
 			throws Exception;
 
