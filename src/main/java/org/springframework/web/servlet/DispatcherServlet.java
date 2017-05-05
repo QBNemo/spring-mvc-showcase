@@ -777,6 +777,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * @see #getWebApplicationContext()
 	 */
 	public final ThemeSource getThemeSource() {
+		/** XmlWebApplicationContext实现了ThemeSource接口 */
 		if (getWebApplicationContext() instanceof ThemeSource) {
 			return (ThemeSource) getWebApplicationContext();
 		}
@@ -870,7 +871,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * Exposes the DispatcherServlet-specific request attributes and delegates to {@link #doDispatch}
 	 * for the actual dispatching.
 	 */
-	/** Http请求处理的入口 */
+	/** Http请求处理的入口   使用maven启动才能类加载配置的log4j.xml */
 	@Override
 	protected void doService(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		if (logger.isDebugEnabled()) {
@@ -881,6 +882,7 @@ public class DispatcherServlet extends FrameworkServlet {
 
 		// Keep a snapshot of the request attributes in case of an include,
 		// to be able to restore the original attributes after the include.
+		/** 对include类型的请求转发保存属性 */
 		Map<String, Object> attributesSnapshot = null;
 		if (WebUtils.isIncludeRequest(request)) {
 			attributesSnapshot = new HashMap<String, Object>();
@@ -1365,6 +1367,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	}
 
 	private static String getRequestUri(HttpServletRequest request) {
+		// RequestDispatcher include, not a top-level HTTP request
 		String uri = (String) request.getAttribute(WebUtils.INCLUDE_REQUEST_URI_ATTRIBUTE);
 		if (uri == null) {
 			uri = request.getRequestURI();

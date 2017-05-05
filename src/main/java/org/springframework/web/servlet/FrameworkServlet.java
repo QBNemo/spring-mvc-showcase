@@ -19,13 +19,20 @@ package org.springframework.web.servlet;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Callable;
+
+import javax.servlet.DispatcherType;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.ApplicationContext;
@@ -197,6 +204,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	private boolean publishEvents = true;
 
 	/** Expose LocaleContext and RequestAttributes as inheritable for child threads? */
+	/** 不继承  */
 	private boolean threadContextInheritable = false;
 
 	/** Should we dispatch an HTTP OPTIONS request to {@link #doService}? */
@@ -849,6 +857,78 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		}
 	}
 
+	private void requestPrt(HttpServletRequest request) {
+		String encoding    = request.getCharacterEncoding();
+		String contentType = request.getContentType();
+		String contextPath = request.getContextPath();
+		
+		// 谷歌chrome最丰富的
+		Cookie[] cookies = request.getCookies();
+		StringBuilder cookie = new StringBuilder();
+		if(cookies==null) {
+			cookie.append("           null");
+		}
+		else {
+		for(int i=0; i<cookies.length; i++) {
+			Cookie c = cookies[i];
+			cookie.append(c.getName() + "/");
+			cookie.append(c.getValue() + "/");
+			cookie.append(c.getDomain() + "/");
+			cookie.append(c.getPath() + "/");
+			cookie.append(c.getMaxAge() + "/");
+			cookie.append(c.getVersion() + ";");
+			if(i < cookies.length -1) {
+				cookie.append("\n\t\t");
+			}
+		}
+		}
+		
+		DispatcherType dispatchType = request.getDispatcherType();
+		// client Accept-Language header  火狐最丰富的
+		Locale locale = request.getLocale();
+		String pathInfo = request.getPathInfo();
+		String requestURI = request.getRequestURI();
+		String requestURL = request.getRequestURL().toString();
+		String servletPath = request.getServletPath();
+		String method = request.getMethod();
+		Enumeration<String> heads = request.getHeaders("Accept-Language");
+		StringBuilder head = new StringBuilder();
+		while(heads.hasMoreElements()) {
+			head.append(heads.nextElement() + "~");
+		}
+		HttpSession session = request.getSession(false);
+		
+		Enumeration<String> hosts = request.getHeaders("Host");
+		StringBuilder hostSB = new StringBuilder();
+		while(hosts.hasMoreElements()) {
+			hostSB.append(hosts.nextElement() + "~");
+		}
+		Enumeration<String> referers = request.getHeaders("Referer");
+		StringBuilder refererSB = new StringBuilder();
+		while(referers.hasMoreElements()) {
+			refererSB.append(referers.nextElement() + "~");
+		}
+		
+		StringBuilder sb = new StringBuilder("FrameworkServlet 打印请求信息\n");
+		sb.append("\t" + "contextPath : " + contextPath + "\n");
+		sb.append("\t" + "servletPath : " + servletPath + "\n");
+		sb.append("\t" + "requestURI : " + requestURI + "\n");
+		sb.append("\t" + "requestURL : " + requestURL + "\n");
+		sb.append("\t" + "method : " + method + "\n");
+		sb.append("\t" + "cookie : " + cookie + "\n");
+		sb.append("\t" + "session :           " + (session == null ? "null" : session.getId()) + "\n");
+		sb.append("\t" + "dispatchType : " + dispatchType + "\n");
+		sb.append("\t" + "locale : " + locale + "\n");
+		sb.append("\t" + "Accept-Language : " + head + "\n");
+		sb.append("\t" + "Host : " + hostSB + "\n");
+		sb.append("\t" + "Referer : " + refererSB + "\n");
+		sb.append("\t" + "pathInfo : " + pathInfo + "\n");
+		sb.append("\t" + "encoding : " + encoding + "\n");
+		sb.append("\t" + "contentType : " + contentType + "\n");
+		
+		
+		logger.error(sb);
+	}
 
 	/**
 	 * Override the parent class implementation in order to intercept PATCH
@@ -857,7 +937,9 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
+		// 打印请求信息  测试无法通过 仅供调试
+        requestPrt(request);
+        
 		String method = request.getMethod();
 		if (method.equalsIgnoreCase(RequestMethod.PATCH.name())) {
 			processRequest(request, response);
@@ -985,6 +1067,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		WebAsyncManager asyncManager = WebAsyncUtils.getAsyncManager(request);
 		asyncManager.registerCallableInterceptor(FrameworkServlet.class.getName(), new RequestBindingInterceptor());
 
+		/** 将localeContext、requestAttributes绑定到当前线程  */
 		initContextHolders(request, localeContext, requestAttributes);
 
 		try {
@@ -1034,6 +1117,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	 * @return the corresponding LocaleContext, or {@code null} if none to bind
 	 * @see LocaleContextHolder#setLocaleContext
 	 */
+	/** DispatcherServlet重写  返回匿名内部类  */
 	protected LocaleContext buildLocaleContext(HttpServletRequest request) {
 		return new SimpleLocaleContext(request.getLocale());
 	}
