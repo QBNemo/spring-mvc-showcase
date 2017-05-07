@@ -40,6 +40,7 @@ public class HandlerExecutionChain {
 
 	private static final Log logger = LogFactory.getLog(HandlerExecutionChain.class);
 
+	// handler是Object类型，必然有一个起点类型不为HandlerExecutionChain
 	private final Object handler;
 
 	private HandlerInterceptor[] interceptors;
@@ -72,9 +73,11 @@ public class HandlerExecutionChain {
 			CollectionUtils.mergeArrayIntoCollection(interceptors, this.interceptorList);
 		}
 		else {
+			// handler不是chain类型，  List为null
 			this.handler = handler;
 			this.interceptors = interceptors;
 		}
+		logger.error("HandlerExecutionChain construct an instance");
 	}
 
 
@@ -211,6 +214,14 @@ public class HandlerExecutionChain {
 			sb.append(" and ").append(this.interceptorList.size()).append(" interceptor");
 			if (this.interceptorList.size() > 1) {
 				sb.append("s");
+			}
+		}
+		else {
+			if(this.interceptors != null && this.interceptors.length > 0) {
+				sb.append(" and ").append(this.interceptors.length).append(" interceptor");
+				if (this.interceptors.length > 1) {
+					sb.append("s");
+				}
 			}
 		}
 		return sb.toString();

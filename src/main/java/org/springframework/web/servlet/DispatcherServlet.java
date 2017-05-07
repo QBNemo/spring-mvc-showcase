@@ -988,6 +988,7 @@ public class DispatcherServlet extends FrameworkServlet {
 			catch (Exception ex) {
 				dispatchException = ex;
 			}
+			/**  */
 			processDispatchResult(processedRequest, response, mappedHandler, mv, dispatchException);
 		}
 		catch (Exception ex) {
