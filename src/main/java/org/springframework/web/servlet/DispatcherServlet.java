@@ -1095,6 +1095,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * @return the processed request (multipart wrapper if necessary)
 	 * @see MultipartResolver#resolveMultipart
 	 */
+	/** Multipart : post方法， contentType以"multipart/"开头   */
 	protected HttpServletRequest checkMultipart(HttpServletRequest request) throws MultipartException {
 		if (this.multipartResolver != null && this.multipartResolver.isMultipart(request)) {
 			if (WebUtils.getNativeRequest(request, MultipartHttpServletRequest.class) != null) {
@@ -1358,6 +1359,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		for (String attrName : attrsToCheck) {
 			Object attrValue = attributesSnapshot.get(attrName);
 			if (attrValue == null){
+				// 新增加的属性
 				request.removeAttribute(attrName);
 			}
 			else if (attrValue != request.getAttribute(attrName)) {
