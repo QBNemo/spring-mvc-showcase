@@ -869,7 +869,8 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	}
 
 	private void requestPrt(HttpServletRequest request) {
-		String encoding    = request.getCharacterEncoding();
+		// WebUtils.DEFAULT_CHARACTER_ENCODING servlet规范默认编码
+		String characterEncoding = request.getCharacterEncoding();
 		String contentType = request.getContentType();
 		String contextPath = request.getContextPath();
 		
@@ -921,7 +922,6 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		}
 		
 		StringBuilder sb = new StringBuilder("FrameworkServlet 打印请求信息\n");
-		sb.append("\t" + "contentType : " + contentType + "\n");
 		sb.append("\t" + "contextPath : " + contextPath + "\n");
 		sb.append("\t" + "servletPath : " + servletPath + "\n");
 		sb.append("\t" + "requestURI : " + requestURI + "\n");
@@ -935,9 +935,8 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		sb.append("\t" + "Host : " + hostSB + "\n");
 		sb.append("\t" + "Referer : " + refererSB + "\n");
 		sb.append("\t" + "pathInfo : " + pathInfo + "\n");
-		sb.append("\t" + "encoding : " + encoding + "\n");
+		sb.append("\t" + "characterEncoding : " + characterEncoding + "\n");
 		sb.append("\t" + "contentType : " + contentType + "\n");
-		
 		
 		logger.error(sb);
 	}
