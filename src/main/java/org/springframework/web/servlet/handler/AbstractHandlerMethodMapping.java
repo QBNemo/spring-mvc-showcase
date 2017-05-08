@@ -316,17 +316,18 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	protected HandlerMethod getHandlerInternal(HttpServletRequest request) throws Exception {
 		String lookupPath = getUrlPathHelper().getLookupPathForRequest(request);
 		if (logger.isDebugEnabled()) {
-			logger.debug("Looking up handler method for path " + lookupPath);
+			logger.debug("AbstractHandlerMethodMapping Looking up handler method for path " + lookupPath);
 		}
 		this.mappingRegistry.acquireReadLock();
 		try {
+			// HandlerMethod beanFactory is beanFactory, not rootBeanFactory
 			HandlerMethod handlerMethod = lookupHandlerMethod(lookupPath, request);
 			if (logger.isDebugEnabled()) {
 				if (handlerMethod != null) {
-					logger.debug("Returning handler method [" + handlerMethod + "]");
+					logger.debug("AbstractHandlerMethodMapping Returning handler method [" + handlerMethod + "]");
 				}
 				else {
-					logger.debug("Did not find handler method for [" + lookupPath + "]");
+					logger.debug("AbstractHandlerMethodMapping Did not find handler method for [" + lookupPath + "]");
 				}
 			}
 			return (handlerMethod != null ? handlerMethod.createWithResolvedBean() : null);

@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.act.ActUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -591,7 +592,17 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 						"' as ServletContext attribute with name [" + attrName + "]");
 			}
 		}
-
+		
+		if (this.logger.isDebugEnabled()) {
+			String beanFactory = ActUtil.hashCode(wac, "beanFactory");
+			String rootBeanFactory = ActUtil.hashCode(wac.getParent(), "beanFactory");
+			this.logger.debug("FrameworkServlet '" + getServletName() + "'" 
+			    +"\n\twebApplicationContext : " + ActUtil.hashCode(wac)
+			    + "\n\tWebApplicationContext.ROOT : " + ActUtil.hashCode(wac.getParent())
+			    + "\n\tbeanFactory : " + beanFactory 
+			    + "\n\trootBeanFactory : " + rootBeanFactory);
+		}
+		
 		return wac;
 	}
 
@@ -858,7 +869,8 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	}
 
 	private void requestPrt(HttpServletRequest request) {
-		String encoding    = request.getCharacterEncoding();
+		// WebUtils.DEFAULT_CHARACTER_ENCODING servlet规范默认编码
+		String characterEncoding = request.getCharacterEncoding();
 		String contentType = request.getContentType();
 		String contextPath = request.getContextPath();
 		
@@ -923,7 +935,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		sb.append("\t" + "Host : " + hostSB + "\n");
 		sb.append("\t" + "Referer : " + refererSB + "\n");
 		sb.append("\t" + "pathInfo : " + pathInfo + "\n");
-		sb.append("\t" + "encoding : " + encoding + "\n");
+		sb.append("\t" + "characterEncoding : " + characterEncoding + "\n");
 		sb.append("\t" + "contentType : " + contentType + "\n");
 		
 		

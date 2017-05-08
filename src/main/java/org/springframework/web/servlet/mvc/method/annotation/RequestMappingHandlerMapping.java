@@ -65,7 +65,10 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 
 	private RequestMappingInfo.BuilderConfiguration config = new RequestMappingInfo.BuilderConfiguration();
 
-
+    public RequestMappingHandlerMapping() {
+    	logger.error("RequestMappingHandlerMapping construct an instance");
+    }
+    
 	/**
 	 * Whether to use suffix pattern match (".*") when matching patterns to
 	 * requests. If enabled a method mapped to "/users" also matches to "/users.*".
