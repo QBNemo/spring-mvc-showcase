@@ -34,7 +34,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.act.ActUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -591,16 +590,6 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 				this.logger.debug("FrameworkServlet Published WebApplicationContext of servlet '" + getServletName() +
 						"' as ServletContext attribute with name [" + attrName + "]");
 			}
-		}
-		
-		if (this.logger.isDebugEnabled()) {
-			String beanFactory = ActUtil.hashCode(wac, "beanFactory");
-			String rootBeanFactory = ActUtil.hashCode(wac.getParent(), "beanFactory");
-			this.logger.debug("FrameworkServlet '" + getServletName() + "'" 
-			    +"\n\twebApplicationContext : " + ActUtil.hashCode(wac)
-			    + "\n\tWebApplicationContext.ROOT : " + ActUtil.hashCode(wac.getParent())
-			    + "\n\tbeanFactory : " + beanFactory 
-			    + "\n\trootBeanFactory : " + rootBeanFactory);
 		}
 		
 		return wac;
