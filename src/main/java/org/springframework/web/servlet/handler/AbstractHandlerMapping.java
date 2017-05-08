@@ -83,7 +83,6 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 
 	private final UrlBasedCorsConfigurationSource corsConfigSource = new UrlBasedCorsConfigurationSource();
 
-
 	/**
 	 * Specify the order value for this HandlerMapping bean.
 	 * <p>Default value is {@code Integer.MAX_VALUE}, meaning that it's non-ordered.

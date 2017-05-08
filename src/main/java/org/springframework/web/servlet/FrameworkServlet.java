@@ -869,8 +869,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	}
 
 	private void requestPrt(HttpServletRequest request) {
-		// WebUtils.DEFAULT_CHARACTER_ENCODING servlet规范默认编码
-		String characterEncoding = request.getCharacterEncoding();
+		String encoding    = request.getCharacterEncoding();
 		String contentType = request.getContentType();
 		String contextPath = request.getContextPath();
 		
@@ -922,6 +921,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		}
 		
 		StringBuilder sb = new StringBuilder("FrameworkServlet 打印请求信息\n");
+		sb.append("\t" + "contentType : " + contentType + "\n");
 		sb.append("\t" + "contextPath : " + contextPath + "\n");
 		sb.append("\t" + "servletPath : " + servletPath + "\n");
 		sb.append("\t" + "requestURI : " + requestURI + "\n");
@@ -935,7 +935,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		sb.append("\t" + "Host : " + hostSB + "\n");
 		sb.append("\t" + "Referer : " + refererSB + "\n");
 		sb.append("\t" + "pathInfo : " + pathInfo + "\n");
-		sb.append("\t" + "characterEncoding : " + characterEncoding + "\n");
+		sb.append("\t" + "encoding : " + encoding + "\n");
 		sb.append("\t" + "contentType : " + contentType + "\n");
 		
 		
@@ -1165,8 +1165,8 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		if (requestAttributes != null) {
 			RequestContextHolder.setRequestAttributes(requestAttributes, this.threadContextInheritable);
 		}
-		if (logger.isTraceEnabled()) {
-			logger.trace("Bound request context to thread: " + request);
+		if (logger.isDebugEnabled()) {
+			logger.debug("FrameworkServlet Bound request context to thread: " + request);
 		}
 	}
 
@@ -1175,14 +1175,14 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 
 		LocaleContextHolder.setLocaleContext(prevLocaleContext, this.threadContextInheritable);
 		RequestContextHolder.setRequestAttributes(previousAttributes, this.threadContextInheritable);
-		if (logger.isTraceEnabled()) {
-			logger.trace("Cleared thread-bound request context: " + request);
+		if (logger.isDebugEnabled()) {
+			logger.debug("FrameworkServlet Cleared thread-bound request context: " + request);
 		}
 	}
 
 	private void publishRequestHandledEvent(
 			HttpServletRequest request, HttpServletResponse response, long startTime, Throwable failureCause) {
-
+        /**  request.getUserPrincipal() */
 		if (this.publishEvents) {
 			// Whether or not we succeeded, publish an event.
 			long processingTime = System.currentTimeMillis() - startTime;
