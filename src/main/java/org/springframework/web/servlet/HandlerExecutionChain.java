@@ -41,6 +41,7 @@ public class HandlerExecutionChain {
 	private static final Log logger = LogFactory.getLog(HandlerExecutionChain.class);
 
 	// handler是Object类型，必然有一个起点类型不为HandlerExecutionChain
+	// RequestMappingHandlerMapping对应HandlerMethod
 	private final Object handler;
 
 	private HandlerInterceptor[] interceptors;
@@ -77,7 +78,6 @@ public class HandlerExecutionChain {
 			this.handler = handler;
 			this.interceptors = interceptors;
 		}
-		logger.error("HandlerExecutionChain construct an instance");
 	}
 
 

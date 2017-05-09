@@ -347,6 +347,7 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	 */
 	@Override
 	public final HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
+		// AbstractHandlerMethodMapping返回HandlerMethod, null
 		Object handler = getHandlerInternal(request);
 		if (handler == null) {
 			handler = getDefaultHandler();
@@ -386,6 +387,7 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	 * @return the corresponding handler instance, or {@code null} if none found
 	 * @throws Exception if there is an internal error
 	 */
+	/** AbstractHandlerMethodMapping实现  返回HandlerMethod */
 	protected abstract Object getHandlerInternal(HttpServletRequest request) throws Exception;
 
 	/**

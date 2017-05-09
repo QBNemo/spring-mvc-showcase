@@ -34,7 +34,10 @@ import javax.servlet.http.HttpServletResponseWrapper;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.act.ActUtil;
+import org.springframework.act.RootContextBean;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.support.AbstractBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationContextException;
@@ -49,6 +52,7 @@ import org.springframework.context.i18n.SimpleLocaleContext;
 import org.springframework.core.GenericTypeResolver;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.samples.mvc.MvcBean;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
@@ -530,6 +534,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	 * @see #FrameworkServlet(WebApplicationContext)
 	 * @see #setContextClass
 	 * @see #setContextConfigLocation
+	 * {@link org.springframework.web.context.support.XmlWebApplicationContext}
 	 */
 	protected WebApplicationContext initWebApplicationContext() {
 		if (this.logger.isDebugEnabled()) {
@@ -595,11 +600,23 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		if (this.logger.isDebugEnabled()) {
 			String beanFactory = ActUtil.hashCode(wac, "beanFactory");
 			String rootBeanFactory = ActUtil.hashCode(wac.getParent(), "beanFactory");
+			BeanFactory bf  = wac.getAutowireCapableBeanFactory();
+			// BeanFactory rbf = wac.getParentBeanFactory() = wac.getParent()
+			BeanFactory pbf = null;
+		    if(bf instanceof AbstractBeanFactory) {
+		    	pbf = ((AbstractBeanFactory) bf).getParentBeanFactory();
+		    }
+			MvcBean anno = bf.getBean("mvcBeanAnno", MvcBean.class);
+			MvcBean xml = bf.getBean("mvcBeanXml", MvcBean.class);
+			// 如果没有，会继续去父容器查找
+			RootContextBean root = bf.getBean(RootContextBean.class);
+
 			this.logger.debug("FrameworkServlet '" + getServletName() + "'" 
 			    +"\n\twebApplicationContext : " + ActUtil.hashCode(wac)
 			    + "\n\tWebApplicationContext.ROOT : " + ActUtil.hashCode(wac.getParent())
 			    + "\n\tbeanFactory : " + beanFactory 
-			    + "\n\trootBeanFactory : " + rootBeanFactory);
+			    + "\n\trootBeanFactory : " + rootBeanFactory
+			    );
 		}
 		
 		return wac;

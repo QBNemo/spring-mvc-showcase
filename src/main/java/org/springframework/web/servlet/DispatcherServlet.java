@@ -55,9 +55,10 @@ import org.springframework.web.context.request.async.WebAsyncUtils;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.servlet.handler.AbstractHandlerMapping;
 import org.springframework.web.util.NestedServletException;
 import org.springframework.web.util.WebUtils;
-
+import org.springframework.act.ActUtil;
 import org.springframework.act.RootContextBean;
 import org.springframework.samples.mvc.MvcBean;
 
@@ -475,20 +476,22 @@ public class DispatcherServlet extends FrameworkServlet {
 		initStrategies(context);
 	}
 
-	/**
-	 * Initialize the strategy objects that this servlet uses.
-	 * <p>May be overridden in subclasses in order to initialize further strategy objects.
-	 */
-	protected void initStrategies(ApplicationContext context) {
-		/*
-		// 这一段代码无法通过测试 仅仅供调试
+	private void beanFind(ApplicationContext context) {
 		Map<String, MvcBean> mvcbeans = BeanFactoryUtils.beansOfTypeIncludingAncestors(context, MvcBean.class, true, false);
 		Map<String, RootContextBean> rootbeans = BeanFactoryUtils.beansOfTypeIncludingAncestors(context, RootContextBean.class, true, false);
 		MvcBean anno = context.getBean("mvcBeanAnno", MvcBean.class);
 		MvcBean xml = context.getBean("mvcBeanXml", MvcBean.class);
 		// 如果没有，会继续去父容器查找
 		RootContextBean root = context.getBean(RootContextBean.class);
-		*/
+	}
+	
+	/**
+	 * Initialize the strategy objects that this servlet uses.
+	 * <p>May be overridden in subclasses in order to initialize further strategy objects.
+	 */
+	protected void initStrategies(ApplicationContext context) {
+		// 这一段代码无法通过测试 仅仅供调试
+		beanFind(context);
 		
 		logger.error("initStrategies start");
 		initMultipartResolver(context);
@@ -1133,14 +1136,24 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * @param request current HTTP request
 	 * @return the HandlerExecutionChain, or {@code null} if no handler could be found
 	 */
+	/** 使用HandlerMapping查找HandlerExecutionChain */
 	protected HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
 		for (HandlerMapping hm : this.handlerMappings) {
 			if (logger.isTraceEnabled()) {
 				logger.trace(
 						"Testing handler map [" + hm + "] in DispatcherServlet with name '" + getServletName() + "'");
 			}
+			
+			Object defaultHandler = null;
+			if(hm instanceof AbstractHandlerMapping) {
+				AbstractHandlerMapping ahm = (AbstractHandlerMapping) hm;
+				// RequestMappingHandlerMapping defaultHandler=null
+				defaultHandler =  ahm.getDefaultHandler();
+			}
+			
 			HandlerExecutionChain handler = hm.getHandler(request);
 			if (handler != null) {
+				logger.error("HandlerMapping : " + ActUtil.hashCode(hm));
 				return handler;
 			}
 		}

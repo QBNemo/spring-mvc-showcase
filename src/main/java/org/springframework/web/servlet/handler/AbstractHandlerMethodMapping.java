@@ -320,7 +320,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 		}
 		this.mappingRegistry.acquireReadLock();
 		try {
-			// HandlerMethod beanFactory is beanFactory, not rootBeanFactory
+			// HandlerMethod beanFactory是DispatcherServlet的webApplicationContext包含的beanFactory
 			HandlerMethod handlerMethod = lookupHandlerMethod(lookupPath, request);
 			if (logger.isDebugEnabled()) {
 				if (handlerMethod != null) {
