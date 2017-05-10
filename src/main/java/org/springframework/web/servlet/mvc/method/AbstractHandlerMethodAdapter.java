@@ -72,6 +72,7 @@ public abstract class AbstractHandlerMethodAdapter extends WebContentGenerator i
 	 * Given a handler method, return whether or not this adapter can support it.
 	 * @param handlerMethod the handler method to check
 	 * @return whether or not this adapter can adapt the given method
+	 * RequestMappingHandlerAdapter实现该方法，总是返回{@code true}
 	 */
 	protected abstract boolean supportsInternal(HandlerMethod handlerMethod);
 

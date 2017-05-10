@@ -56,6 +56,7 @@ import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.servlet.handler.AbstractHandlerMapping;
+import org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter;
 import org.springframework.web.util.NestedServletException;
 import org.springframework.web.util.WebUtils;
 import org.springframework.act.ActUtil;
@@ -1192,6 +1193,8 @@ public class DispatcherServlet extends FrameworkServlet {
 				logger.trace("Testing handler adapter [" + ha + "]");
 			}
 			if (ha.supports(handler)) {
+				// RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
+				logger.error("HandlerAdapter : " + ActUtil.hashCode(ha));
 				return ha;
 			}
 		}
