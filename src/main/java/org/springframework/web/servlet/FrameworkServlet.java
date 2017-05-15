@@ -953,7 +953,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		sb.append("\t" + "pathInfo : " + pathInfo + "\n");
 		sb.append("\t" + "characterEncoding : " + characterEncoding + "\n");
 		sb.append("\t" + "contentType : " + contentType + "\n");
-		
+		sb.append("\t" + "hashCode : @" + Integer.toHexString(request.hashCode()) + "\n");
 		logger.error(sb);
 	}
 
