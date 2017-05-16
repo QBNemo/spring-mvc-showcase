@@ -19,6 +19,9 @@ package org.springframework.web.servlet.handler;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.act.ActUtil;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.context.request.WebRequestInterceptor;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -51,6 +54,7 @@ public final class MappedInterceptor implements HandlerInterceptor {
 
 	private PathMatcher pathMatcher;
 
+	protected final Log logger = LogFactory.getLog(getClass());
 
 	/**
 	 * Create a new MappedInterceptor instance.
@@ -71,6 +75,7 @@ public final class MappedInterceptor implements HandlerInterceptor {
 		this.includePatterns = includePatterns;
 		this.excludePatterns = excludePatterns;
 		this.interceptor = interceptor;
+		logger.error("MappedInterceptor construct with HandlerInterceptor : " + ActUtil.hashCode(interceptor) );
 	}
 
 
@@ -81,6 +86,7 @@ public final class MappedInterceptor implements HandlerInterceptor {
 	 */
 	public MappedInterceptor(String[] includePatterns, WebRequestInterceptor interceptor) {
 		this(includePatterns, null, interceptor);
+		logger.error("MappedInterceptor construct with WebRequestInterceptor : " + ActUtil.hashCode(interceptor) );
 	}
 
 	/**
@@ -103,6 +109,7 @@ public final class MappedInterceptor implements HandlerInterceptor {
 	 * @param pathMatcher the path matcher to use
 	 */
 	public void setPathMatcher(PathMatcher pathMatcher) {
+		logger.error("MappedInterceptor setPathMatcher : " + ActUtil.hashCode(pathMatcher));
 		this.pathMatcher = pathMatcher;
 	}
 

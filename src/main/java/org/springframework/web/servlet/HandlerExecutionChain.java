@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
+import org.springframework.act.ActUtil;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
@@ -38,7 +38,7 @@ import org.springframework.util.ObjectUtils;
  */
 public class HandlerExecutionChain {
 
-	private static final Log logger = LogFactory.getLog(HandlerExecutionChain.class);
+	protected final Log logger = LogFactory.getLog(getClass());
 
 	// handler是Object类型，必然有一个起点类型不为HandlerExecutionChain
 	// RequestMappingHandlerMapping对应HandlerMethod
@@ -78,6 +78,7 @@ public class HandlerExecutionChain {
 			this.handler = handler;
 			this.interceptors = interceptors;
 		}
+		logger.error("HandlerExecutionChain construct an instance : " + ActUtil.hashCode(this));
 	}
 
 

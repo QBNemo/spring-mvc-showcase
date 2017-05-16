@@ -24,6 +24,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.act.ActUtil;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.core.Ordered;
@@ -77,6 +78,7 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 
 	private final List<Object> interceptors = new ArrayList<Object>();
 
+	// 对外组建HandlerExecutionChain
 	private final List<HandlerInterceptor> adaptedInterceptors = new ArrayList<HandlerInterceptor>();
 
 	private CorsProcessor corsProcessor = new DefaultCorsProcessor();
@@ -242,8 +244,12 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	 */
 	@Override
 	protected void initApplicationContext() throws BeansException {
+		logger.error("AbstractHandlerMapping initApplicationContext");
+		// NOOP 子类去实现
 		extendInterceptors(this.interceptors);
+		// 搜寻MappedInterceptor
 		detectMappedInterceptors(this.adaptedInterceptors);
+		// this.interceptors以HandlerInterceptor加入this.adaptedInterceptors
 		initInterceptors();
 	}
 
@@ -307,6 +313,7 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 			return (HandlerInterceptor) interceptor;
 		}
 		else if (interceptor instanceof WebRequestInterceptor) {
+			logger.error("AbstractHandlerMapping found WebRequestInterceptor : " + ActUtil.hashCode(interceptor));
 			return new WebRequestHandlerInterceptorAdapter((WebRequestInterceptor) interceptor);
 		}
 		else {
