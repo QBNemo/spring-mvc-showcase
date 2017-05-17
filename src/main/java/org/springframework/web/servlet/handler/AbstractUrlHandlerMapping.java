@@ -54,6 +54,7 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping {
 
 	private Object rootHandler;
 
+	// 模式（key）字符串末尾添加 /（不会出现两个 /），再与url进行匹配，匹配成功的模式是带 /的版本
 	private boolean useTrailingSlashMatch = false;
 
 	private boolean lazyInitHandlers = false;
@@ -138,10 +139,10 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping {
 			}
 		}
 		if (handler != null && logger.isDebugEnabled()) {
-			logger.debug("Mapping [" + lookupPath + "] to " + handler);
+			logger.debug("AbstractUrlHandlerMapping Mapping [" + lookupPath + "] to " + handler);
 		}
-		else if (handler == null && logger.isTraceEnabled()) {
-			logger.trace("No handler mapping found for [" + lookupPath + "]");
+		else if (handler == null && logger.isDebugEnabled()) {
+			logger.debug("AbstractUrlHandlerMapping No handler mapping found for [" + lookupPath + "]");
 		}
 		return handler;
 	}
@@ -188,7 +189,7 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping {
 		if (!matchingPatterns.isEmpty()) {
 			Collections.sort(matchingPatterns, patternComparator);
 			if (logger.isDebugEnabled()) {
-				logger.debug("Matching patterns for request [" + urlPath + "] are " + matchingPatterns);
+				logger.debug("AbstractUrlHandlerMapping Matching patterns for request [" + urlPath + "] are " + matchingPatterns);
 			}
 			bestPatternMatch = matchingPatterns.get(0);
 		}
@@ -196,6 +197,7 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping {
 			handler = this.handlerMap.get(bestPatternMatch);
 			if (handler == null) {
 				Assert.isTrue(bestPatternMatch.endsWith("/"));
+				// 寻找匹配模式时，人为添加的/
 				handler = this.handlerMap.get(bestPatternMatch.substring(0, bestPatternMatch.length() - 1));
 			}
 			// Bean name or resolved handler?
@@ -213,11 +215,11 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping {
 				if (patternComparator.compare(bestPatternMatch, matchingPattern) == 0) {
 					Map<String, String> vars = getPathMatcher().extractUriTemplateVariables(matchingPattern, urlPath);
 					Map<String, String> decodedVars = getUrlPathHelper().decodePathVariables(request, vars);
-					uriTemplateVariables.putAll(decodedVars);
+					uriTemplateVariables.putAll(decodedVars); 
 				}
 			}
 			if (logger.isDebugEnabled()) {
-				logger.debug("URI Template variables for request [" + urlPath + "] are " + uriTemplateVariables);
+				logger.debug("AbstractUrlHandlerMapping URI Template variables for request [" + urlPath + "] are " + uriTemplateVariables);
 			}
 			return buildPathExposingHandler(handler, bestPatternMatch, pathWithinMapping, uriTemplateVariables);
 		}
