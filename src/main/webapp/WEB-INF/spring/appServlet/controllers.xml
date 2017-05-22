@@ -12,6 +12,6 @@
 	
 	<context:component-scan base-package="org.springframework.samples.mvc" />
 	
-	<!-- 不在扫描范围 需要注册  -->
+	<!-- 该控制器不在扫描范围 需要注册  -->
 	<bean id="beanConfig" class="org.springframework.act.BeanConfig"></bean>
 </beans>

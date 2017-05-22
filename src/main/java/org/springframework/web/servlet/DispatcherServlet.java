@@ -491,10 +491,9 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * <p>May be overridden in subclasses in order to initialize further strategy objects.
 	 */
 	protected void initStrategies(ApplicationContext context) {
-		// 这一段代码无法通过测试 仅仅供调试
-		beanFind(context);
+		// beanFind(context);
 		
-		logger.error("initStrategies start");
+		logger.error("DispatcherServlet initStrategies start");
 		initMultipartResolver(context);
 		initLocaleResolver(context);
 		initThemeResolver(context);
@@ -504,7 +503,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		initRequestToViewNameTranslator(context);
 		initViewResolvers(context);
 		initFlashMapManager(context);
-		logger.error("initStrategies end");
+		logger.error("DispatcherServlet initStrategies end");
 	}
 
 	/**
@@ -875,7 +874,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * Exposes the DispatcherServlet-specific request attributes and delegates to {@link #doDispatch}
 	 * for the actual dispatching.
 	 */
-	/** Http请求处理的入口   使用maven启动才能类加载配置的log4j.xml */
+	/** Http请求处理的入口   */
 	@Override
 	protected void doService(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		if (logger.isDebugEnabled()) {

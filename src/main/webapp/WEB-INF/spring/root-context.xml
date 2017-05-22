@@ -25,6 +25,6 @@
 	    <constructor-arg value="rootContextBeanForTest"></constructor-arg>
 	</bean>
 	
-	<!-- 需要注册 这个xml注册到WebApplicationContext.ROOT -->
+	<!-- 该控制器需要注册 这个xml注册到WebApplicationContext.ROOT -->
 	<!-- <bean id="beanConfig" class="org.springframework.act.BeanConfig"></bean> -->
 </beans>

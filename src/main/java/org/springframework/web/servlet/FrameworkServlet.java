@@ -500,12 +500,13 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	protected final void initServletBean() throws ServletException {
 		// Web容器输出日志
 		getServletContext().log("Initializing Spring FrameworkServlet '" + getServletName() + "'");
-		if (this.logger.isInfoEnabled()) {
-			this.logger.info("FrameworkServlet '" + getServletName() + "': initialization started");
+		if (this.logger.isDebugEnabled()) {
+			this.logger.debug("FrameworkServlet '" + getServletName() + "': initialization started");
 		}
 		long startTime = System.currentTimeMillis();
 
 		try {
+			// 初始化WebApplicationContext 刷新容器 初始化DispatchServlet组件
 			this.webApplicationContext = initWebApplicationContext();
 			// NOOP
 			initFrameworkServlet();
@@ -519,9 +520,9 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 			throw ex;
 		}
 
-		if (this.logger.isInfoEnabled()) {
+		if (this.logger.isDebugEnabled()) {
 			long elapsedTime = System.currentTimeMillis() - startTime;
-			this.logger.info("FrameworkServlet '" + getServletName() + "': initialization completed in " +
+			this.logger.debug("FrameworkServlet '" + getServletName() + "': initialization completed in " +
 					elapsedTime + " ms");
 		}
 	}
@@ -588,7 +589,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 
 		if (this.publishContext) {
 			// Publish the context as a servlet context attribute.
-			// "org.springframework.web.servlet.FrameworkServlet.CONTEXT." + getServletName()
+			// 设置到属性 "org.springframework.web.servlet.FrameworkServlet.CONTEXT." + getServletName()
 			String attrName = getServletContextAttributeName();
 			getServletContext().setAttribute(attrName, wac);
 			if (this.logger.isDebugEnabled()) {
@@ -608,8 +609,10 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		    }
 			MvcBean anno = bf.getBean("mvcBeanAnno", MvcBean.class);
 			MvcBean xml = bf.getBean("mvcBeanXml", MvcBean.class);
+			
+			// TestFilter不在spring的bean工厂内 
 			// 如果没有，会继续去父容器查找
-			RootContextBean root = bf.getBean(RootContextBean.class);
+			RootContextBean rootContextBean = bf.getBean(RootContextBean.class);
 
 			this.logger.debug("FrameworkServlet '" + getServletName() + "'" 
 			    +"\n\twebApplicationContext : " + ActUtil.hashCode(wac)
@@ -689,12 +692,13 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		if (ObjectUtils.identityToString(wac).equals(wac.getId())) {
 			// The application context id is still set to its original default value
 			// -> assign a more useful id based on available information
+			// 形式如org.springframework.web.context.support.XmlWebApplicationContext@10ef361d
 			if (this.contextId != null) {
 				wac.setId(this.contextId);
 			}
 			else {
 				// Generate default id...
-				// 与WebApplicationContext。ROOT相比，多了ServletName
+				// 与WebApplicationContext.ROOT相比，多了ServletName
 				wac.setId(ConfigurableWebApplicationContext.APPLICATION_CONTEXT_ID_PREFIX +
 						ObjectUtils.getDisplayString(getServletContext().getContextPath()) + "/" + getServletName());
 			}
@@ -703,6 +707,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		wac.setServletContext(getServletContext());
 		wac.setServletConfig(getServletConfig());
 		wac.setNamespace(getNamespace());
+		// 内部类
 		wac.addApplicationListener(new SourceFilteringListener(wac, new ContextRefreshListener()));
 
 		// The wac environment's #initPropertySources will be called in any case when the context
@@ -715,7 +720,6 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 
 		postProcessWebApplicationContext(wac);
 		applyInitializers(wac);
-		// 大量操作  包括bean的生成
 		wac.refresh();
 	}
 
@@ -854,9 +858,10 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	 * @param event the incoming ApplicationContext event
 	 */
 	public void onApplicationEvent(ContextRefreshedEvent event) {
+		logger.error("FrameworkServlet 上下文刷新事件触发");
 		this.refreshEventReceived = true;
 		ApplicationContext ctx = event.getApplicationContext();
-		// NOOP DispatcherServlet实现initStrategies(context);
+		// NOOP DispatcherServlet重写  实现initStrategies(context);
 		onRefresh(event.getApplicationContext());
 	}
 
@@ -962,9 +967,10 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	 * requests.
 	 */
 	@Override
+	/** 重写service、doGet、doPost等   */
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// 打印请求信息  测试无法通过 仅供调试
+		// 打印请求信息
         requestPrt(request);
         
 		String method = request.getMethod();
@@ -1094,7 +1100,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 		WebAsyncManager asyncManager = WebAsyncUtils.getAsyncManager(request);
 		asyncManager.registerCallableInterceptor(FrameworkServlet.class.getName(), new RequestBindingInterceptor());
 
-		/** 将localeContext、requestAttributes绑定到当前线程  */
+		/** 将localeContext、requestAttributes绑定到当前线程   子线程不继承threadContextInheritable=false */
 		initContextHolders(request, localeContext, requestAttributes);
 
 		try {
@@ -1202,6 +1208,14 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 			// Whether or not we succeeded, publish an event.
 			long processingTime = System.currentTimeMillis() - startTime;
 			int statusCode = (responseGetStatusAvailable ? response.getStatus() : -1);
+			
+			ServletRequestHandledEvent event = new ServletRequestHandledEvent(this,
+					request.getRequestURI(), request.getRemoteAddr(),
+					request.getMethod(), getServletConfig().getServletName(),
+					WebUtils.getSessionId(request), getUsernameForRequest(request),
+					processingTime, failureCause, statusCode);
+			logger.error("FrameworkServlet publishEvent : " + event.getDescription());
+			
 			this.webApplicationContext.publishEvent(
 					new ServletRequestHandledEvent(this,
 							request.getRequestURI(), request.getRemoteAddr(),
@@ -1251,6 +1265,9 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 
 		@Override
 		public void onApplicationEvent(ContextRefreshedEvent event) {
+			// 理解this的含义
+			// this : org.springframework.web.servlet.FrameworkServlet$ContextRefreshListener@1a06bd0a
+			// FrameworkServlet.this : org.springframework.web.servlet.DispatcherServlet@3b98f334
 			FrameworkServlet.this.onApplicationEvent(event);
 		}
 	}

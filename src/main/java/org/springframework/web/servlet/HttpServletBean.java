@@ -118,6 +118,7 @@ public abstract class HttpServletBean extends HttpServlet
 	 */
 	@Override
 	public final void init() throws ServletException {
+		// 重写init
 		if (logger.isDebugEnabled()) {
 			logger.debug("HttpServletBean Initializing servlet '" + getServletName() + "'");
 		}
@@ -135,6 +136,7 @@ public abstract class HttpServletBean extends HttpServlet
 			ResourceLoader resourceLoader = new ServletContextResourceLoader(getServletContext());
 			bw.registerCustomEditor(Resource.class, new ResourceEditor(resourceLoader, getEnvironment()));
 			initBeanWrapper(bw);
+			// 初始化init参数
 			bw.setPropertyValues(pvs, true);
 		}
 		catch (BeansException ex) {
