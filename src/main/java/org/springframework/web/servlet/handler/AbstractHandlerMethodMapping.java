@@ -34,16 +34,20 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.ReflectionUtils.MethodFilter;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.method.HandlerMethodSelector;
 import org.springframework.web.servlet.HandlerMapping;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 
 /**
  * Abstract base class for {@link HandlerMapping} implementations that define
@@ -159,7 +163,9 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	 * Detects handler methods at initialization.
 	 */
 	@Override
+	/**  RequestMappingHandlerMapping重写该方法   */
 	public void afterPropertiesSet() {
+		logger.debug("AbstractHandlerMethodMapping afterPropertiesSet()");
 		initHandlerMethods();
 	}
 
@@ -171,17 +177,24 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	 */
 	protected void initHandlerMethods() {
 		if (logger.isDebugEnabled()) {
-			logger.debug("Looking for request mappings in application context: " + getApplicationContext());
+			logger.debug("AbstractHandlerMethodMapping Looking for request mappings in application context: " + getApplicationContext());
 		}
+		// 容器内的所有bean名字
 		String[] beanNames = (this.detectHandlerMethodsInAncestorContexts ?
 				BeanFactoryUtils.beanNamesForTypeIncludingAncestors(getApplicationContext(), Object.class) :
 				getApplicationContext().getBeanNamesForType(Object.class));
-
+        
+		ApplicationContext ctx = getApplicationContext();
 		for (String name : beanNames) {
+			if(name.equals("BB")) {
+				new String();
+			}
+			// isHandler由RequestMappingHandlerMapping实现   判断Controller、RequestMapping注解
 			if (!name.startsWith(SCOPED_TARGET_NAME_PREFIX) && isHandler(getApplicationContext().getType(name))) {
 				detectHandlerMethods(name);
 			}
 		}
+		// NOOP
 		handlerMethodsInitialized(getHandlerMethods());
 	}
 
@@ -522,14 +535,14 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 
 
 		public void register(T mapping, Object handler, Method method) {
-
+            // mapping 类型都为 org.springframework.web.servlet.mvc.method.RequestMappingInfo
 			this.readWriteLock.writeLock().lock();
 			try {
 				HandlerMethod handlerMethod = createHandlerMethod(handler, method);
 				assertUniqueMethodMapping(handlerMethod, mapping);
 
-				if (logger.isInfoEnabled()) {
-					logger.info("Mapped \"" + mapping + "\" onto " + handlerMethod);
+				if (logger.isDebugEnabled()) {
+					logger.debug("AbstractHandlerMethodMapping Mapped \"" + mapping + "\" onto " + handlerMethod);
 				}
 				this.mappingLookup.put(mapping, handlerMethod);
 

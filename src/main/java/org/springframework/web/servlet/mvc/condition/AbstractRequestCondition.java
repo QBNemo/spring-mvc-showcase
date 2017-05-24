@@ -26,6 +26,7 @@ import java.util.Iterator;
  * @author Rossen Stoyanchev
  * @since 3.1
  */
+/** 8个子类   */
 public abstract class AbstractRequestCondition<T extends AbstractRequestCondition<T>> implements RequestCondition<T> {
 
 	@Override

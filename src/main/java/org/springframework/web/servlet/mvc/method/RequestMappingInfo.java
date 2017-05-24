@@ -19,6 +19,8 @@ package org.springframework.web.servlet.mvc.method;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.PathMatcher;
 import org.springframework.util.StringUtils;
@@ -69,7 +71,8 @@ public final class RequestMappingInfo implements RequestCondition<RequestMapping
 
 	private final RequestConditionHolder customConditionHolder;
 
-
+    protected Log logger = LogFactory.getLog(getClass());
+    
 	public RequestMappingInfo(String name, PatternsRequestCondition patterns, RequestMethodsRequestCondition methods,
 			ParamsRequestCondition params, HeadersRequestCondition headers, ConsumesRequestCondition consumes,
 			ProducesRequestCondition produces, RequestCondition<?> custom) {

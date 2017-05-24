@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.core.annotation.AnnotatedElementUtils;
+import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
@@ -117,6 +118,7 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 
 	@Override
 	public void afterPropertiesSet() {
+		logger.debug("RequestMappingHandlerMapping afterPropertiesSet()");
 		this.config = new RequestMappingInfo.BuilderConfiguration();
 		this.config.setPathHelper(getUrlPathHelper());
 		this.config.setPathMatcher(getPathMatcher());
@@ -167,12 +169,13 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 
 	/**
 	 * {@inheritDoc}
-	 * Expects a handler to have a type-level @{@link Controller} annotation.
+	 * Expects a handler to have either a type-level @{@link Controller} annotation or a type-level @{@link RequestMapping} annotation.
 	 */
 	@Override
 	protected boolean isHandler(Class<?> beanType) {
-		return ((AnnotationUtils.findAnnotation(beanType, Controller.class) != null) ||
-				(AnnotationUtils.findAnnotation(beanType, RequestMapping.class) != null));
+		boolean b1 = AnnotationUtils.findAnnotation(beanType, Controller.class) != null;
+		boolean b2 = AnnotationUtils.findAnnotation(beanType, RequestMapping.class) != null;
+		return (b1 || b2);
 	}
 
 	/**
@@ -202,8 +205,10 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	 * @see #getCustomTypeCondition(Class)
 	 * @see #getCustomMethodCondition(Method)
 	 */
+	/** 传入Method method */
 	private RequestMappingInfo createRequestMappingInfo(AnnotatedElement element) {
 		RequestMapping requestMapping = AnnotatedElementUtils.findMergedAnnotation(element, RequestMapping.class);
+		AnnotationAttributes requestMapping2 = AnnotatedElementUtils.findMergedAnnotationAttributes(element, RequestMapping.class.getName(), true, true);
 		RequestCondition<?> condition = (element instanceof Class<?> ?
 				getCustomTypeCondition((Class<?>) element) : getCustomMethodCondition((Method) element));
 		return (requestMapping != null ? createRequestMappingInfo(requestMapping, condition) : null);

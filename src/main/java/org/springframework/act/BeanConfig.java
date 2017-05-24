@@ -3,6 +3,8 @@ package org.springframework.act;
 import java.util.Collection;
 import java.util.Iterator;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
@@ -41,6 +43,12 @@ public class BeanConfig implements ApplicationContextAware{
 			sb.append("\n\t" + ActUtil.hashCode(ahm));
 		}
 		return sb.toString();
+	}
+	
+	@RequestMapping("/url/*")
+	public @ResponseBody String mapping(HttpServletRequest req) {
+		String ret = "Mapping: " + req.getRequestURI();
+		return ret;
 	}
 
 }

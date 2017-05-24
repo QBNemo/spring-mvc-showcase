@@ -14,4 +14,6 @@
 	
 	<!-- 该控制器不在扫描范围 需要注册  -->
 	<bean id="beanConfig" class="org.springframework.act.BeanConfig"></bean>
+	<!-- 没有id,第一个name会自动成为beanName 其他name会放入alis  -->
+	<bean id="BB" name="BB2,AliBB" class="org.springframework.act.BB"></bean>
 </beans>
