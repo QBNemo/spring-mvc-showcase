@@ -40,6 +40,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.PathMatcher;
 import org.springframework.util.ReflectionUtils.MethodFilter;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.cors.CorsConfiguration;
@@ -222,6 +223,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 			public boolean matches(Method method) {
 				T mapping = getMappingForMethod(method, userType);
 				if (mapping != null) {
+					// 方法映射到匹配条件 Method->RequestMappingInfo
 					mappings.put(method, mapping);
 					return true;
 				}
@@ -360,21 +362,26 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	 * @see #handleNoMatch(Set, String, HttpServletRequest)
 	 */
 	protected HandlerMethod lookupHandlerMethod(String lookupPath, HttpServletRequest request) throws Exception {
+		// Match就是组合[RequestMappingInfo, HandlerMethod] 但是Match包含的匹配条件的pattern可能与mappingLookup的对应成员不一致
 		List<Match> matches = new ArrayList<Match>();
+		
+		// 查找urlLookup directUrl->List<RequestMappingInfo>
 		List<T> directPathMatches = this.mappingRegistry.getMappingsByUrl(lookupPath);
 		if (directPathMatches != null) {
+			// RequestMappingInfo生成Match, 并加入matches
 			addMatchingMappings(directPathMatches, matches, request);
 		}
 		if (matches.isEmpty()) {
-			// No choice but to go through all mappings...
+			// directUrl匹配不到, 对所有的匹配条件开启模式匹配
+			// this.mappingRegistry.getMappings()=this.mappingLookup ：Map<T, HandlerMethod>
 			addMatchingMappings(this.mappingRegistry.getMappings().keySet(), matches, request);
 		}
 
 		if (!matches.isEmpty()) {
 			Comparator<Match> comparator = new MatchComparator(getMappingComparator(request));
 			Collections.sort(matches, comparator);
-			if (logger.isTraceEnabled()) {
-				logger.trace("Found " + matches.size() + " matching mapping(s) for [" +
+			if (logger.isDebugEnabled()) {
+				logger.debug("AbstractHandlerMethodMapping Found " + matches.size() + " matching mapping(s) for [" +
 						lookupPath + "] : " + matches);
 			}
 			Match bestMatch = matches.get(0);
@@ -400,8 +407,19 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 
 	private void addMatchingMappings(Collection<T> mappings, List<Match> matches, HttpServletRequest request) {
 		for (T mapping : mappings) {
+			if(mapping instanceof RequestMappingInfo) {
+				RequestMappingInfo rmi = (RequestMappingInfo)mapping;
+				if("BBT#BBM".equals(rmi.getName())) {
+					new String();
+				}
+			}
+			// 根据当前请求，生产一个新的RequestMappingInfo
 			T match = getMatchingMapping(mapping, request);
 			if (match != null) {
+				// this.mappingLookup RequestMappingInfo->HandlerMethod
+				Map<T, HandlerMethod> mappingLookupMap = this.mappingRegistry.getMappings();
+				HandlerMethod hm = mappingLookupMap.get(mapping);
+				// 这里的key是mapping, 而不是match 是因为pattern可能变化 可能为 pattern / pattern + extension / pattern + ".*" / pattern +"/"
 				matches.add(new Match(match, this.mappingRegistry.getMappings().get(mapping)));
 			}
 		}
@@ -535,33 +553,45 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 
 
 		public void register(T mapping, Object handler, Method method) {
-            // mapping 类型都为 org.springframework.web.servlet.mvc.method.RequestMappingInfo
+            // mapping 类型为 org.springframework.web.servlet.mvc.method.RequestMappingInfo
+			// handler为bean名或者bean实例
 			this.readWriteLock.writeLock().lock();
 			try {
 				HandlerMethod handlerMethod = createHandlerMethod(handler, method);
+				// 与this.mappingLookup存放记录做同一判断   
+				// this.mappingLookup的映射为RequestMappingInfo->HandlerMethod
 				assertUniqueMethodMapping(handlerMethod, mapping);
 
 				if (logger.isDebugEnabled()) {
 					logger.debug("AbstractHandlerMethodMapping Mapped \"" + mapping + "\" onto " + handlerMethod);
 				}
 				this.mappingLookup.put(mapping, handlerMethod);
-
+				
+                if("BB".equals(handler)) {
+                	logger.error("AbstractHandlerMethodMapping BB 注册" + mapping + "到" + handlerMethod);
+                }
+                
+				// 非模式url列表  模式url不处理
+				// this.urlLookup的映射为directUrl->List<RequestMappingInfo>, this.urlLookup是MultiValueMap
 				List<String> directUrls = getDirectUrls(mapping);
 				for (String url : directUrls) {
 					this.urlLookup.add(url, mapping);
 				}
 
 				String name = null;
+				// 加入this.nameLookup  name->List<HandlerMethod>
 				if (getNamingStrategy() != null) {
 					name = getNamingStrategy().getName(handlerMethod, mapping);
 					addMappingName(name, handlerMethod);
 				}
 
+				// 根据CrossOrigin注解生产corsConfig
 				CorsConfiguration corsConfig = initCorsConfiguration(handler, method, mapping);
 				if (corsConfig != null) {
 					this.corsLookup.put(handlerMethod, corsConfig);
 				}
-
+                
+				// this.registry RequestMappingInfo->MappingRegistration
 				this.registry.put(mapping, new MappingRegistration<T>(mapping, handlerMethod, directUrls, name));
 			}
 			finally {
@@ -570,6 +600,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 		}
 
 		private void assertUniqueMethodMapping(HandlerMethod newHandlerMethod, T mapping) {
+			// RequestMappingInfo->HandlerMethod
 			HandlerMethod handlerMethod = this.mappingLookup.get(mapping);
 			if (handlerMethod != null && !handlerMethod.equals(newHandlerMethod)) {
 				throw new IllegalStateException(
@@ -581,7 +612,9 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 
 		private List<String> getDirectUrls(T mapping) {
 			List<String> urls = new ArrayList<String>(1);
-			for (String path : getMappingPathPatterns(mapping)) {
+			Set<String> paths = getMappingPathPatterns(mapping);
+			for (String path : paths) {
+				// 包含 '*' 或者 '?' 就isPattern
 				if (!getPathMatcher().isPattern(path)) {
 					urls.add(path);
 				}
@@ -610,8 +643,8 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 			this.nameLookup.put(name, newList);
 
 			if (newList.size() > 1) {
-				if (logger.isTraceEnabled()) {
-					logger.trace("Mapping name clash for handlerMethods=" + newList +
+				if (logger.isDebugEnabled()) {
+					logger.debug("Mapping name clash for handlerMethods=" + newList +
 							". Consider assigning explicit names.");
 				}
 			}

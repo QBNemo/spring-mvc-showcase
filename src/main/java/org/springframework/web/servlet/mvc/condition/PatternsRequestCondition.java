@@ -207,6 +207,7 @@ public final class PatternsRequestCondition extends AbstractRequestCondition<Pat
 		}
 
 		String lookupPath = this.pathHelper.getLookupPathForRequest(request);
+		// 匹配的pattern 可能为 pattern / pattern + extension / pattern + ".*" / pattern +"/"
 		List<String> matches = getMatchingPatterns(lookupPath);
 
 		return matches.isEmpty() ? null :
@@ -226,6 +227,7 @@ public final class PatternsRequestCondition extends AbstractRequestCondition<Pat
 	public List<String> getMatchingPatterns(String lookupPath) {
 		List<String> matches = new ArrayList<String>();
 		for (String pattern : this.patterns) {
+			// 返回的match 可能为 pattern / pattern + extension / pattern + ".*" / pattern +"/"
 			String match = getMatchingPattern(pattern, lookupPath);
 			if (match != null) {
 				matches.add(match);
@@ -237,9 +239,11 @@ public final class PatternsRequestCondition extends AbstractRequestCondition<Pat
 
 	private String getMatchingPattern(String pattern, String lookupPath) {
 		if (pattern.equals(lookupPath)) {
+			// 相同
 			return pattern;
 		}
 		if (this.useSuffixPatternMatch) {
+			List<String> fe = this.fileExtensions;
 			if (!this.fileExtensions.isEmpty() && lookupPath.indexOf('.') != -1) {
 				for (String extension : this.fileExtensions) {
 					if (this.pathMatcher.match(pattern + extension, lookupPath)) {
@@ -255,9 +259,11 @@ public final class PatternsRequestCondition extends AbstractRequestCondition<Pat
 			}
 		}
 		if (this.pathMatcher.match(pattern, lookupPath)) {
+			// 匹配
 			return pattern;
 		}
 		if (this.useTrailingSlashMatch) {
+			// pattern加上后置/再与lookupPath（url）进行匹配
 			if (!pattern.endsWith("/") && this.pathMatcher.match(pattern + "/", lookupPath)) {
 				return pattern +"/";
 			}

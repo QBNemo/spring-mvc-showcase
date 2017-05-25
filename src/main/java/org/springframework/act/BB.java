@@ -1,28 +1,19 @@
 package org.springframework.act;
 
-import java.lang.reflect.AnnotatedElement;
-
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 
 @RequestMapping(name="BBT")
 public class BB {
-	/**
-	 * 	RequestMappingHandlerMapping createRequestMappingInfo(AnnotatedElement element)
-	 *	RequestMapping requestMapping = AnnotatedElementUtils.findMergedAnnotation(element, RequestMapping.class)
-	 *  可能有bug
-	 */
-	
-	// value path只可取一个
+	// value path只可取一个  spring会自动在前面补/
 	@RequestMapping(name="BBM", 
-			        value={"/bbpath", "bbpath2"}, 
+			        // bb/模式就是/bb/,匹配路径/bb/,不匹配路径/bb
+			        value={"/bbpath", "/bbpath*", "bbpath2", "bb/"},  
 			        method={RequestMethod.GET, RequestMethod.HEAD, RequestMethod.POST},
-			        produces = {"text/plain", "application/*"}
+			        produces = {"text/html", "application/*"}
                     )
 	
 	public @ResponseBody String bb(HttpServletRequest req) {

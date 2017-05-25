@@ -219,6 +219,7 @@ public final class RequestMappingInfo implements RequestCondition<RequestMapping
 
 		if (methods == null || params == null || headers == null || consumes == null || produces == null) {
 			if (CorsUtils.isPreFlightRequest(request)) {
+				logger.error("RequestMappingInfo getMatchingCondition 跨域请求");
 				methods = getAccessControlRequestMethodCondition(request);
 				if (methods == null || params == null) {
 					return null;
@@ -229,6 +230,7 @@ public final class RequestMappingInfo implements RequestCondition<RequestMapping
 			}
 		}
 
+		// 匹配的pattern 可能为 pattern / pattern + extension / pattern + ".*" / pattern +"/"
 		PatternsRequestCondition patterns = this.patternsCondition.getMatchingCondition(request);
 		if (patterns == null) {
 			return null;
