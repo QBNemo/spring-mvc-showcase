@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.act.ActUtil;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.PathMatcher;
 import org.springframework.util.StringUtils;
@@ -219,7 +220,7 @@ public final class RequestMappingInfo implements RequestCondition<RequestMapping
 
 		if (methods == null || params == null || headers == null || consumes == null || produces == null) {
 			if (CorsUtils.isPreFlightRequest(request)) {
-				logger.error("RequestMappingInfo getMatchingCondition 跨域请求");
+				logger.error("RequestMappingInfo getMatchingCondition 跨域请求 " +  ActUtil.hashCode(request));
 				methods = getAccessControlRequestMethodCondition(request);
 				if (methods == null || params == null) {
 					return null;

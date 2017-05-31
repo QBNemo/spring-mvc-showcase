@@ -2,6 +2,7 @@ package org.springframework.act;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -18,6 +19,15 @@ public class BB {
 	
 	public @ResponseBody String bb(HttpServletRequest req) {
 		String ret = "bb: " + req.getRequestURI();
+		return ret;
+	}
+}
+
+@Controller
+class AbcCtr {
+	@RequestMapping("/abc") 
+	public @ResponseBody String abcMethod(HttpServletRequest req) {
+		String ret = "abc: " + req.getRequestURI();
 		return ret;
 	}
 }

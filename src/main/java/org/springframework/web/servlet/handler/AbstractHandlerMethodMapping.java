@@ -32,6 +32,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.act.ActUtil;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
@@ -178,7 +179,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	 */
 	protected void initHandlerMethods() {
 		if (logger.isDebugEnabled()) {
-			logger.debug("AbstractHandlerMethodMapping Looking for request mappings in application context: " + getApplicationContext());
+			logger.debug("AbstractHandlerMethodMapping 注册handler: " + getApplicationContext());
 		}
 		// 容器内的所有bean名字
 		String[] beanNames = (this.detectHandlerMethodsInAncestorContexts ?
@@ -187,7 +188,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
         
 		ApplicationContext ctx = getApplicationContext();
 		for (String name : beanNames) {
-			if(name.equals("BB")) {
+			if("BB".equals(name) || "aC".equals(name)) {
 				new String();
 			}
 			// isHandler由RequestMappingHandlerMapping实现   判断Controller、RequestMapping注解
@@ -221,6 +222,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 		Set<Method> methods = HandlerMethodSelector.selectMethods(userType, new MethodFilter() {
 			@Override
 			public boolean matches(Method method) {
+				// 完全根据@RequestMapping注解生成
 				T mapping = getMappingForMethod(method, userType);
 				if (mapping != null) {
 					// 方法映射到匹配条件 Method->RequestMappingInfo
@@ -387,6 +389,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 			Match bestMatch = matches.get(0);
 			if (matches.size() > 1) {
 				if (CorsUtils.isPreFlightRequest(request)) {
+					logger.error("AbstractHandlerMethodMapping 跨域请求 " + ActUtil.hashCode(request));
 					return PREFLIGHT_AMBIGUOUS_MATCH;
 				}
 				Match secondBestMatch = matches.get(1);
@@ -571,7 +574,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
                 	logger.error("AbstractHandlerMethodMapping BB 注册" + mapping + "到" + handlerMethod);
                 }
                 
-				// 非模式url列表  模式url不处理
+				// 不带通配符的url列表
 				// this.urlLookup的映射为directUrl->List<RequestMappingInfo>, this.urlLookup是MultiValueMap
 				List<String> directUrls = getDirectUrls(mapping);
 				for (String url : directUrls) {
@@ -581,11 +584,12 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 				String name = null;
 				// 加入this.nameLookup  name->List<HandlerMethod>
 				if (getNamingStrategy() != null) {
+					// 从@RequestMapping取,为空就取类名大写字母组合#方法名
 					name = getNamingStrategy().getName(handlerMethod, mapping);
 					addMappingName(name, handlerMethod);
 				}
 
-				// 根据CrossOrigin注解生产corsConfig
+				// 根据@CrossOrigin注解生产corsConfig
 				CorsConfiguration corsConfig = initCorsConfiguration(handler, method, mapping);
 				if (corsConfig != null) {
 					this.corsLookup.put(handlerMethod, corsConfig);
