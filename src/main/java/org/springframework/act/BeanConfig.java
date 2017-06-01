@@ -54,7 +54,7 @@ public class BeanConfig implements ApplicationContextAware{
 	// 与BB.bb具有相同的url：/bbpath
 	@RequestMapping("/bbpath")
 	public @ResponseBody String mappingBB(HttpServletRequest req) {
-		String ret = "mappingBB: " + req.getRequestURI();
+		String ret = "BeanConfig mappingBB: " + req.getRequestURI();
 		return ret;
 	}
 

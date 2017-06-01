@@ -18,7 +18,7 @@ public class BB {
                     )
 	
 	public @ResponseBody String bb(HttpServletRequest req) {
-		String ret = "bb: " + req.getRequestURI();
+		String ret = "BB bb: " + req.getRequestURI();
 		return ret;
 	}
 }
