@@ -222,7 +222,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 		Set<Method> methods = HandlerMethodSelector.selectMethods(userType, new MethodFilter() {
 			@Override
 			public boolean matches(Method method) {
-				// 完全根据@RequestMapping注解生成
+				// 完全根据@RequestMapping注解生成   原始版本，build得到，与request无关
 				T mapping = getMappingForMethod(method, userType);
 				if (mapping != null) {
 					// 方法映射到匹配条件 Method->RequestMappingInfo
