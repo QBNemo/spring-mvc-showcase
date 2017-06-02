@@ -207,7 +207,7 @@ public final class PatternsRequestCondition extends AbstractRequestCondition<Pat
 		}
 
 		String lookupPath = this.pathHelper.getLookupPathForRequest(request);
-		// 匹配的pattern 可能为 pattern / pattern + extension / pattern + ".*" / pattern +"/"
+		// 匹配的pattern 可能为 pattern / pattern + extension / pattern + ".*" / pattern +"/" 排过序
 		List<String> matches = getMatchingPatterns(lookupPath);
 
 		return matches.isEmpty() ? null :
@@ -233,6 +233,7 @@ public final class PatternsRequestCondition extends AbstractRequestCondition<Pat
 				matches.add(match);
 			}
 		}
+		// 排序
 		Collections.sort(matches, this.pathMatcher.getPatternComparator(lookupPath));
 		return matches;
 	}
@@ -259,7 +260,7 @@ public final class PatternsRequestCondition extends AbstractRequestCondition<Pat
 			}
 		}
 		if (this.pathMatcher.match(pattern, lookupPath)) {
-			// 匹配
+			// 匹配   例如：/abc/{uriTemplate}匹配/abc/100
 			return pattern;
 		}
 		if (this.useTrailingSlashMatch) {

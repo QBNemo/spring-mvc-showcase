@@ -188,6 +188,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
         
 		ApplicationContext ctx = getApplicationContext();
 		for (String name : beanNames) {
+			// ac : /abc/{abcCtrUriTemplateVariable}
 			if("BB".equals(name) || "aC".equals(name)) {
 				new String();
 			}
@@ -413,7 +414,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 		for (T mapping : mappings) {
 			if(mapping instanceof RequestMappingInfo) {
 				RequestMappingInfo rmi = (RequestMappingInfo)mapping;
-				if("BBT#BBM".equals(rmi.getName())) {
+				if("BBT#BBM".equals(rmi.getName()) || "abcMethod".equals(rmi.getName())) {
 					new String();
 				}
 			}
@@ -575,7 +576,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
                 	logger.error("AbstractHandlerMethodMapping BB 注册" + mapping + "到" + handlerMethod);
                 }
                 
-				// 不带通配符的url列表
+				// 不带通配符的url列表   例如/abc/{abcCtrUriTemplateVariable}
 				// this.urlLookup的映射为directUrl->List<RequestMappingInfo>, this.urlLookup是MultiValueMap
 				List<String> directUrls = getDirectUrls(mapping);
 				for (String url : directUrls) {

@@ -44,6 +44,7 @@ import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.handler.AbstractHandlerMethodMapping;
 import org.springframework.web.servlet.mvc.condition.NameValueExpression;
 import org.springframework.web.servlet.mvc.condition.ParamsRequestCondition;
+import org.springframework.web.servlet.mvc.condition.RequestMethodsRequestCondition;
 import org.springframework.web.util.WebUtils;
 
 /**
@@ -115,7 +116,9 @@ public abstract class RequestMappingInfoHandlerMapping extends AbstractHandlerMe
 		}
 		else {
 			bestPattern = patterns.iterator().next();
+			// 提取URI template variables {} 并放入map
 			uriVariables = getPathMatcher().extractUriTemplateVariables(bestPattern, lookupPath);
+			// URL编码   蜀->%E8%9C%80
 			decodedUriVariables = getUrlPathHelper().decodePathVariables(request, uriVariables);
 		}
 
@@ -184,12 +187,16 @@ public abstract class RequestMappingInfoHandlerMapping extends AbstractHandlerMe
 		Set<RequestMappingInfo> patternAndMethodMatches = new HashSet<RequestMappingInfo>();
 
 		for (RequestMappingInfo info : requestMappingInfos) {
+			if("BBT#BBM".equals(info.getName()) || "abcMethod".equals(info.getName())) {
+				new String();
+			}
 			if (info.getPatternsCondition().getMatchingCondition(request) != null) {
 				patternMatches.add(info);
 				if (info.getMethodsCondition().getMatchingCondition(request) != null) {
 					patternAndMethodMatches.add(info);
 				}
 				else {
+					RequestMethodsRequestCondition cond = info.getMethodsCondition();
 					for (RequestMethod method : info.getMethodsCondition().getMethods()) {
 						allowedMethods.add(method.name());
 					}
