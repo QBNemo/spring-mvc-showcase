@@ -355,7 +355,7 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	/** 实现HandlerMapping接口声明的getHandler*/
 	@Override
 	public final HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
-		// AbstractHandlerMethodMapping返回HandlerMethod
+		// AbstractHandlerMethodMapping返回resolved了的HandlerMethod,其bean属性是bean object非bean name
 		Object handler = getHandlerInternal(request);
 		if (handler == null) {
 			handler = getDefaultHandler();
