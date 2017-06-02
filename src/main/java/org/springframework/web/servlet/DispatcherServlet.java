@@ -989,6 +989,7 @@ public class DispatcherServlet extends FrameworkServlet {
 				mappedHandler.applyPostHandle(processedRequest, response, mv);
 			}
 			catch (Exception ex) {
+				// org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' not supported
 				dispatchException = ex;
 			}
 			/**  */
