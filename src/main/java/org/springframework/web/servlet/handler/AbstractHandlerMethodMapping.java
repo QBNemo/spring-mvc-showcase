@@ -407,6 +407,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 		}
 		else {
 			// 要么返回null，要么抛异常(url匹配，但是方法 参数 consumer producer等等不匹配)
+			logger.debug("AbstractHandlerMethodMapping handleNoMatch ");
 			return handleNoMatch(this.mappingRegistry.getMappings().keySet(), lookupPath, request);
 		}
 	}
