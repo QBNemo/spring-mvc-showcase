@@ -218,6 +218,7 @@ public final class RequestMappingInfo implements RequestCondition<RequestMapping
 		ConsumesRequestCondition consumes = this.consumesCondition.getMatchingCondition(request);
 		ProducesRequestCondition produces = this.producesCondition.getMatchingCondition(request);
 
+		// null表示某种condition与request不匹配，[]表示condition为空，未设置限制条件，匹配
 		if (methods == null || params == null || headers == null || consumes == null || produces == null) {
 			if (CorsUtils.isPreFlightRequest(request)) {
 				logger.error("RequestMappingInfo getMatchingCondition 跨域请求 " +  ActUtil.hashCode(request));
@@ -268,6 +269,7 @@ public final class RequestMappingInfo implements RequestCondition<RequestMapping
 	 * {@link #getMatchingCondition(HttpServletRequest)} to ensure they have conditions with
 	 * content relevant to current request.
 	 */
+	/* 顺序不太好  patternsCondition methodsCondition consumesCondition producesCondition paramsCondition 与AbstractHandlerMethodMapping的handleNoMatch一致*/
 	@Override
 	public int compareTo(RequestMappingInfo other, HttpServletRequest request) {
 		int result = this.patternsCondition.compareTo(other.getPatternsCondition(), request);

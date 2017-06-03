@@ -406,6 +406,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 			return bestMatch.handlerMethod;
 		}
 		else {
+			// 要么返回null，要么抛异常(url匹配，但是方法 参数 consumer producer等等不匹配)
 			return handleNoMatch(this.mappingRegistry.getMappings().keySet(), lookupPath, request);
 		}
 	}
@@ -414,7 +415,10 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 		for (T mapping : mappings) {
 			if(mapping instanceof RequestMappingInfo) {
 				RequestMappingInfo rmi = (RequestMappingInfo)mapping;
-				if("BBT#BBM".equals(rmi.getName()) || "abcMethod".equals(rmi.getName())) {
+				if("BBT#BBM".equals(rmi.getName())) {
+					new String();
+				}
+				if(rmi.getName() != null && rmi.getName().startsWith("abcMethod")) {
 					new String();
 				}
 			}

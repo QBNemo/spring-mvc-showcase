@@ -185,9 +185,12 @@ public abstract class RequestMappingInfoHandlerMapping extends AbstractHandlerMe
 
 		Set<RequestMappingInfo> patternMatches = new HashSet<RequestMappingInfo>();
 		Set<RequestMappingInfo> patternAndMethodMatches = new HashSet<RequestMappingInfo>();
-
+		
 		for (RequestMappingInfo info : requestMappingInfos) {
-			if("BBT#BBM".equals(info.getName()) || "abcMethod".equals(info.getName())) {
+			if("BBT#BBM".equals(info.getName())) {
+				new String();
+			}
+			if(info.getName() != null && info.getName().startsWith("abcMethod")) {
 				new String();
 			}
 			if (info.getPatternsCondition().getMatchingCondition(request) != null) {
@@ -205,16 +208,18 @@ public abstract class RequestMappingInfoHandlerMapping extends AbstractHandlerMe
 		}
 
 		if (patternMatches.isEmpty()) {
+			// url不匹配
 			return null;
 		}
 		else if (patternAndMethodMatches.isEmpty() && !allowedMethods.isEmpty()) {
+			// 方法不支持
 			throw new HttpRequestMethodNotSupportedException(request.getMethod(), allowedMethods);
 		}
 
 		Set<MediaType> consumableMediaTypes;
 		Set<MediaType> producibleMediaTypes;
 		List<String[]> paramConditions;
-
+		
 		if (patternAndMethodMatches.isEmpty()) {
 			consumableMediaTypes = getConsumableMediaTypes(request, patternMatches);
 			producibleMediaTypes = getProducibleMediaTypes(request, patternMatches);
@@ -242,6 +247,7 @@ public abstract class RequestMappingInfoHandlerMapping extends AbstractHandlerMe
 			throw new HttpMediaTypeNotAcceptableException(new ArrayList<MediaType>(producibleMediaTypes));
 		}
 		else if (!CollectionUtils.isEmpty(paramConditions)) {
+			// 参数不匹配
 			throw new UnsatisfiedServletRequestParameterException(paramConditions, request.getParameterMap());
 		}
 		else {
@@ -274,6 +280,7 @@ public abstract class RequestMappingInfoHandlerMapping extends AbstractHandlerMe
 		for (RequestMappingInfo partialMatch : partialMatches) {
 			ParamsRequestCondition condition = partialMatch.getParamsCondition();
 			Set<NameValueExpression<String>> expressions = condition.getExpressions();
+			ParamsRequestCondition prc = condition.getMatchingCondition(request);
 			if (!CollectionUtils.isEmpty(expressions) && condition.getMatchingCondition(request) == null) {
 				int i = 0;
 				String[] array = new String[expressions.size()];

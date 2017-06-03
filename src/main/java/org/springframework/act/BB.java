@@ -25,10 +25,30 @@ public class BB {
 
 @Controller
 class AbcCtr {
-	// URL匹配，但方法不支持
-	@RequestMapping(name="abcMethod", value="/abc/{abcCtrUriTemplateVariable}", method={RequestMethod.POST}) 
+	//@RequestMapping(name="abcMethod", value="/abc/{abcCtrUriTemplateVariable}") 
 	public @ResponseBody String abcMethod(HttpServletRequest req) {
-		String ret = "abc: " + req.getRequestURI();
+		String ret = "AbcCtr abc : " + req.getRequestURI();
+		return ret;
+	}
+	
+	// URL匹配，但方法不支持
+	@RequestMapping(name="abcMethod1", value="/abc/{abcCtrUriTemplateVariable}", method={RequestMethod.POST}) 
+	public @ResponseBody String abcMethod1(HttpServletRequest req) {
+		String ret = "AbcCtr abc post: "  + req.getRequestURI();
+		return ret;
+	}
+	
+	// URL匹配，但param不支持 此处只要该参数存在即可
+	@RequestMapping(name="abcMethod2", value="/abc/{abcCtrUriTemplateVariable}", params="paramtest") 
+	public @ResponseBody String abcMethod2(HttpServletRequest req) {
+		String ret = "AbcCtr abc params: "  + req.getRequestURI();
+		return ret;
+	}
+	
+	// URL匹配，但header不支持
+	@RequestMapping(name="abcMethod3", value="/abc/{abcCtrUriTemplateVariable}", params="paramtest2=testparam2", headers="headertest") 
+	public @ResponseBody String abcMethod3(HttpServletRequest req) {
+		String ret = "AbcCtr abc headers: "  + req.getRequestURI();
 		return ret;
 	}
 }
