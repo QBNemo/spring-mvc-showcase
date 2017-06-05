@@ -422,6 +422,9 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 				if(rmi.getName() != null && rmi.getName().startsWith("abcMethod")) {
 					new String();
 				}
+				if(rmi.getName() != null && rmi.getName().startsWith("mname")) {
+					new String();
+				}
 			}
 			// 根据当前请求，生产一个新的RequestMappingInfo
 			T match = getMatchingMapping(mapping, request);

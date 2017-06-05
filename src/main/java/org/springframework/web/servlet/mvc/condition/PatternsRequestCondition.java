@@ -255,6 +255,7 @@ public final class PatternsRequestCondition extends AbstractRequestCondition<Pat
 			else {
 				boolean hasSuffix = pattern.indexOf('.') != -1;
 				if (!hasSuffix && this.pathMatcher.match(pattern + ".*", lookupPath)) {
+					// /mapping/produces匹配/mapping/produces.json
 					return pattern + ".*";
 				}
 			}

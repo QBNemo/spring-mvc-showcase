@@ -52,12 +52,12 @@ public class MappingController {
 		return "Mapped by path + method + consumable media type (javaBean '" + javaBean + "')";
 	}
 
-	@RequestMapping(value="/mapping/produces", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value="/mapping/produces", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE, name="mname")
 	public @ResponseBody JavaBean byProducesJson() {
 		return new JavaBean();
 	}
 
-	@RequestMapping(value="/mapping/produces", method=RequestMethod.GET, produces=MediaType.APPLICATION_XML_VALUE)
+	@RequestMapping(value="/mapping/produces", method=RequestMethod.GET, produces=MediaType.APPLICATION_XML_VALUE, name="mname")
 	public @ResponseBody JavaBean byProducesXml() {
 		return new JavaBean();
 	}

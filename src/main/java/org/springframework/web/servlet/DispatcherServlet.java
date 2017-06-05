@@ -953,6 +953,7 @@ public class DispatcherServlet extends FrameworkServlet {
 				// Determine handler for the current request.
 				mappedHandler = getHandler(processedRequest);
 				if (mappedHandler == null || mappedHandler.getHandler() == null) {
+					// 404 sendError(HttpServletResponse.SC_NOT_FOUND)
 					noHandlerFound(processedRequest, response);
 					return;
 				}
@@ -1169,7 +1170,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 */
 	protected void noHandlerFound(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		if (pageNotFoundLogger.isWarnEnabled()) {
-			pageNotFoundLogger.warn("No mapping found for HTTP request with URI [" + getRequestUri(request) +
+			pageNotFoundLogger.warn("DispatcherServlet No mapping found for HTTP request with URI [" + getRequestUri(request) +
 					"] in DispatcherServlet with name '" + getServletName() + "'");
 		}
 		if (this.throwExceptionIfNoHandlerFound) {
@@ -1194,7 +1195,7 @@ public class DispatcherServlet extends FrameworkServlet {
 			}
 			if (ha.supports(handler)) {
 				// RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
-				logger.error("HandlerAdapter : " + ActUtil.hashCode(ha));
+				logger.error("DispatcherServlet HandlerAdapter : " + ActUtil.hashCode(ha));
 				return ha;
 			}
 		}
