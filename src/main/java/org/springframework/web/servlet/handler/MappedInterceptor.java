@@ -164,6 +164,7 @@ public final class MappedInterceptor implements HandlerInterceptor {
 			}
 		}
 		if (this.includePatterns == null) {
+			// 匹配
 			return true;
 		}
 		else {

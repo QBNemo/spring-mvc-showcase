@@ -19,9 +19,11 @@ package org.springframework.web.servlet;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import javax.servlet.DispatcherType;
@@ -37,6 +39,7 @@ import org.springframework.act.ActUtil;
 import org.springframework.act.RootContextBean;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.support.AbstractBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -53,10 +56,12 @@ import org.springframework.core.GenericTypeResolver;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.samples.mvc.MvcBean;
+import org.springframework.samples.mvc.exceptions.GlobalExceptionHandler;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 import org.springframework.web.context.ConfigurableWebEnvironment;
@@ -73,6 +78,8 @@ import org.springframework.web.context.support.ServletRequestHandledEvent;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.springframework.web.cors.CorsUtils;
+import org.springframework.web.method.ControllerAdviceBean;
+import org.springframework.web.servlet.handler.MappedInterceptor;
 import org.springframework.web.util.NestedServletException;
 import org.springframework.web.util.WebUtils;
 
@@ -613,7 +620,25 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 			// TestFilter不在spring的bean工厂内 
 			// 如果没有，会继续去父容器查找
 			RootContextBean rootContextBean = bf.getBean(RootContextBean.class);
+            
+			// AbstractHandlerMapping中注册的MappedInterceptor
+			Collection<MappedInterceptor> miNotIn = BeanFactoryUtils.beansOfTypeIncludingAncestors(wac.getParent(), MappedInterceptor.class, true, false).values();
+			Collection<MappedInterceptor> miIn    = BeanFactoryUtils.beansOfTypeIncludingAncestors(wac            , MappedInterceptor.class, true, false).values();
 
+			List<String> caIn = new ArrayList<String>();
+			GlobalExceptionHandler controllerAdvice = null;
+			for (String name : BeanFactoryUtils.beanNamesForTypeIncludingAncestors(wac, Object.class)) {
+				if (wac.findAnnotationOnBean(name, ControllerAdvice.class) != null) {
+					//beans.add(new ControllerAdviceBean(name, applicationContext));
+					caIn.add(name);
+					// org.springframework.samples.mvc.exceptions.GlobalExceptionHandler
+					Object cabean = bf.getBean(name);
+					if(cabean instanceof GlobalExceptionHandler) {
+						controllerAdvice = (GlobalExceptionHandler)cabean;
+					}
+				}
+			}
+			
 			this.logger.debug("FrameworkServlet '" + getServletName() + "'" 
 			    +"\n\twebApplicationContext : " + ActUtil.hashCode(wac)
 			    + "\n\tWebApplicationContext.ROOT : " + ActUtil.hashCode(wac.getParent())

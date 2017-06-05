@@ -706,6 +706,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 	protected ModelAndView handleInternal(HttpServletRequest request,
 			HttpServletResponse response, HandlerMethod handlerMethod) throws Exception {
 
+		// 是否支持该方法，是否要求Session存在，只做判断，不满足就抛异常
 		checkRequest(request);
 
 		if (getSessionAttributesHandler(handlerMethod).hasSessionAttributes()) {

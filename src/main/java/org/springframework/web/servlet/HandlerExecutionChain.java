@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.act.ActUtil;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
@@ -135,6 +136,9 @@ public class HandlerExecutionChain {
 		if (!ObjectUtils.isEmpty(interceptors)) {
 			for (int i = 0; i < interceptors.length; i++) {
 				HandlerInterceptor interceptor = interceptors[i];
+				// request设置以下属性
+				// ConversionService.class.getName() : org.springframework.core.convert.ConversionService
+				// RESOURCE_URL_PROVIDER_ATTR : org.springframework.web.servlet.resource.ResourceUrlProvider
 				if (!interceptor.preHandle(request, response, this.handler)) {
 					triggerAfterCompletion(request, response, null);
 					return false;

@@ -965,6 +965,7 @@ public class DispatcherServlet extends FrameworkServlet {
 				String method = request.getMethod();
 				boolean isGet = "GET".equals(method);
 				if (isGet || "HEAD".equals(method)) {
+					// -1 regenerate
 					long lastModified = ha.getLastModified(request, mappedHandler.getHandler());
 					if (logger.isDebugEnabled()) {
 						logger.debug("Last-Modified value for [" + getRequestUri(request) + "] is: " + lastModified);
@@ -1155,7 +1156,7 @@ public class DispatcherServlet extends FrameworkServlet {
 			
 			HandlerExecutionChain handler = hm.getHandler(request);
 			if (handler != null) {
-				logger.error("HandlerMapping : " + ActUtil.hashCode(hm));
+				logger.error("DispatcherServlet HandlerMapping : " + ActUtil.hashCode(hm));
 				return handler;
 			}
 		}
