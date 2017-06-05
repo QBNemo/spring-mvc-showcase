@@ -46,7 +46,7 @@
 		  		<form:input path="birthDate" />
 		  		 
 		  		<form:label path="phone">
-		  			Phone (in form (###) ###-####) <form:errors path="phone" cssClass="error" />
+		  			Phone (in form (877) 412-7753) <form:errors path="phone" cssClass="error" />
 		  		</form:label>
 		  		<form:input path="phone" />
 	

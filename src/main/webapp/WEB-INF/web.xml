@@ -1,5 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+  	<!-- org.apache.jasper.JasperException: 
+  	     The absolute uri: http://Java.sun.com/jsp/jstl/core 
+  	     cannot be resolved in either web.xml 
+  	     or the jar files deployed with this application -->
+  	<jsp-config>
+	<taglib>
+	<taglib-uri>http://java.sun.com/jstl/fmt</taglib-uri>
+	<taglib-location>/WEB-INF/fmt.tld</taglib-location>
+	</taglib>
+	<taglib>
+	<taglib-uri>http://java.sun.com/jstl/fmt-rt</taglib-uri>
+	<taglib-location>/WEB-INF/fmt-rt.tld</taglib-location>
+	</taglib>
+	<taglib>
+	<taglib-uri>http://java.sun.com/jstl/core</taglib-uri>
+	<taglib-location>/WEB-INF/c.tld</taglib-location>
+	</taglib>
+	<taglib>
+	<taglib-uri>http://java.sun.com/jstl/core-rt</taglib-uri>
+	<taglib-location>/WEB-INF/c-rt.tld</taglib-location>
+	</taglib>
+	<taglib>
+	<taglib-uri>http://java.sun.com/jstl/sql</taglib-uri>
+	<taglib-location>/WEB-INF/sql.tld</taglib-location>
+	</taglib>
+	<taglib>
+	<taglib-uri>http://java.sun.com/jstl/sql-rt</taglib-uri>
+	<taglib-location>/WEB-INF/sql-rt.tld</taglib-location>
+	</taglib>
+	<taglib>
+	<taglib-uri>http://java.sun.com/jstl/x</taglib-uri>
+	<taglib-location>/WEB-INF/x.tld</taglib-location>
+	</taglib>
+	<taglib>
+	<taglib-uri>http://java.sun.com/jstl/x-rt</taglib-uri>
+	<taglib-location>/WEB-INF/x-rt.tld</taglib-location>
+	</taglib>
+	<!-- webmvc.jar META-INF目录 -->
+	<taglib>
+	<taglib-uri>http://www.springframework.org/tags</taglib-uri>
+	<taglib-location>/WEB-INF/classes/META-INF/spring.tld</taglib-location>
+	</taglib>
+	<taglib>
+	<taglib-uri>http://www.springframework.org/tags/form</taglib-uri>
+	<taglib-location>/WEB-INF/classes/META-INF/spring-form.tld</taglib-location>
+	</taglib>
+	</jsp-config>
+	
   <context-param>
     <param-name>contextConfigLocation</param-name>
     <param-value>/WEB-INF/spring/root-context.xml</param-value>
