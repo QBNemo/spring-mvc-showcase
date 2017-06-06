@@ -1,9 +1,11 @@
 package org.springframework.act;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -11,6 +13,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.samples.mvc.data.JavaBean;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -55,6 +58,39 @@ public class BeanConfig implements ApplicationContextAware{
 	@RequestMapping("/bbpath")
 	public @ResponseBody String mappingBB(HttpServletRequest req) {
 		String ret = "BeanConfig mappingBB: " + req.getRequestURI();
+		return ret;
+	}
+	
+	// 与BindController适配
+	@RequestMapping("/session")
+	public @ResponseBody String sessiondo(HttpServletRequest req) {
+		HttpSession session = req.getSession(false);
+		if(session!=null) {
+			String sessionId = session.getId();
+			
+			JavaBean beanInS = null;
+			// session取值
+			Object sob = session.getAttribute("javaBean");
+			if(sob!=null && sob instanceof JavaBean) {
+				beanInS = (JavaBean) sob;
+			}
+			
+			Date now = new Date();
+			JavaBean bean = new JavaBean("!", "@", now.toLocaleString());
+			// session存入
+			session.setAttribute("javaBean", bean);
+			session.setAttribute("haha", "hi-hello");
+			
+			String r = sessionId + " / " + bean.toString();
+			if(beanInS!=null) {
+				r+= " / " + beanInS.toString();
+			} else {
+				r+= " / NULL" ;
+			}
+			return r;
+		}
+		
+		String ret = "NO Session!";
 		return ret;
 	}
 

@@ -17,4 +17,5 @@
 	<!-- 没有id,第一个name会自动成为beanName 其他name会放入alis  -->
 	<bean id="BB" name="BB2,AliBB" class="org.springframework.act.BB"></bean>
 	<bean id="aC" class="org.springframework.act.AbcCtr"></bean>
+	<bean id="bc" class="org.springframework.act.BindController"></bean>
 </beans>
