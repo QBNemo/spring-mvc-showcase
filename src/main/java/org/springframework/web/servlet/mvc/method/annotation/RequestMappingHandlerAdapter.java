@@ -35,6 +35,7 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.core.DefaultParameterNameDiscoverer;
+import org.springframework.core.Ordered;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -528,11 +529,12 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		if (getApplicationContext() == null) {
 			return;
 		}
-		if (logger.isInfoEnabled()) {
-			logger.info("Looking for @ControllerAdvice: " + getApplicationContext());
+		if (logger.isDebugEnabled()) {
+			logger.debug("RequestMappingHandlerAdapter Looking for @ControllerAdvice: " + getApplicationContext());
 		}
 
 		List<ControllerAdviceBean> beans = ControllerAdviceBean.findAnnotatedBeans(getApplicationContext());
+		// order注解若无 一般是Ordered.LOWEST_PRECEDENCE
 		AnnotationAwareOrderComparator.sort(beans);
 
 		List<Object> requestResponseBodyAdviceBeans = new ArrayList<Object>();
@@ -541,20 +543,20 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 			Set<Method> attrMethods = HandlerMethodSelector.selectMethods(bean.getBeanType(), MODEL_ATTRIBUTE_METHODS);
 			if (!attrMethods.isEmpty()) {
 				this.modelAttributeAdviceCache.put(bean, attrMethods);
-				logger.info("Detected @ModelAttribute methods in " + bean);
+				logger.debug("RequestMappingHandlerAdapter Detected @ModelAttribute methods in " + bean);
 			}
 			Set<Method> binderMethods = HandlerMethodSelector.selectMethods(bean.getBeanType(), INIT_BINDER_METHODS);
 			if (!binderMethods.isEmpty()) {
 				this.initBinderAdviceCache.put(bean, binderMethods);
-				logger.info("Detected @InitBinder methods in " + bean);
+				logger.debug("RequestMappingHandlerAdapter Detected @InitBinder methods in " + bean);
 			}
 			if (RequestBodyAdvice.class.isAssignableFrom(bean.getBeanType())) {
 				requestResponseBodyAdviceBeans.add(bean);
-				logger.info("Detected RequestBodyAdvice bean in " + bean);
+				logger.debug("RequestMappingHandlerAdapter Detected RequestBodyAdvice bean in " + bean);
 			}
 			if (ResponseBodyAdvice.class.isAssignableFrom(bean.getBeanType())) {
 				requestResponseBodyAdviceBeans.add(bean);
-				logger.info("Detected ResponseBodyAdvice bean in " + bean);
+				logger.debug("RequestMappingHandlerAdapter Detected ResponseBodyAdvice bean in " + bean);
 			}
 		}
 
