@@ -22,6 +22,16 @@ ${javaBeanList}<br/>
 [${javaBean}]<br/>
 </div>
 
+<h1>javaBean1</h1>
+<div>
+[${javaBean1}]<br/>
+</div>
+
+<h1>javaBean2</h1>
+<div>
+[${javaBean2}]<br/>
+</div>
+
 <h1>mapSize</h1>
 <div>
 [${mapSize}]<br/>

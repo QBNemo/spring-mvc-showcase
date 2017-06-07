@@ -77,8 +77,12 @@ public class BeanConfig implements ApplicationContextAware{
 			
 			Date now = new Date();
 			JavaBean bean = new JavaBean("!", "@", now.toLocaleString());
+			JavaBean bean1 = new JavaBean("!1", "@1", now.toLocaleString());
+			JavaBean bean2 = new JavaBean("!2", "@2", now.toLocaleString());
 			// session存入
 			session.setAttribute("javaBean", bean);
+			session.setAttribute("javaBean1", bean1);
+			session.setAttribute("javaBean2", bean2);
 			session.setAttribute("haha", "hi-hello");
 			
 			String r = sessionId + " / " + bean.toString();
