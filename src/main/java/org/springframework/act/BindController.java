@@ -68,7 +68,7 @@ public class BindController {
 		return bean;
 	}
 	
-	//@ModelAttribute("javaBean2")
+	@ModelAttribute("javaBean2")
 	public JavaBean method02() {
 		logger.error("method02");
 		JavaBean bean = new JavaBean("02", "02", "02");
@@ -138,6 +138,53 @@ public class BindController {
 		// bean会覆盖In 暴露为模型数据  
         JavaBean bean = new JavaBean("bind1", "bind2", "bind3");
 		//status.setComplete();
+		return bean;
+	}
+	
+	// method3-7 DispatcherServlet流程追踪 
+	@RequestMapping(value="/method3", method=RequestMethod.GET)
+	public String method3(Model model) {
+		// 输出到bind。jsp
+		// DispatcherServlet - Successfully completed request
+		logger.error("method3");
+        model.addAttribute("testAttr", "method3 return jsp");
+		return "bind";
+	}
+	@RequestMapping(value="/method4", method=RequestMethod.GET)
+	// @ResponseBody输出页面内容bind 而不是到bind。jsp
+	// DispatcherServlet - Successfully completed request
+	public @ResponseBody String method4(Model model) {
+		logger.error("method4");
+        model.addAttribute("testAttr", "method4 return responsebody");
+		return "bind";
+	}
+	@RequestMapping(value="/method5", method=RequestMethod.GET)
+	@ModelAttribute
+	public @ResponseBody String method5(Model model) {
+		// 输出到method5。jsp HTTP Status 404 - /spring-mvc-showcase/WEB-INF/views/method5.jsp
+		// DispatcherServlet - Successfully completed request
+		logger.error("method5");
+        model.addAttribute("testAttr", "method5 return responsebody");
+		return "bind";
+	}
+	@RequestMapping(value="/method6", method=RequestMethod.GET)
+	public @ResponseBody JavaBean method6(Model model) {
+		// @ResponseBody输出页面内容<JavaBean xmlns=""><param1>m6</param1><param2>m6</param2><param3>m6</param3></JavaBean> 而不是到method6。jsp
+		// !!! 方法写多了消失 后台DispatcherServlet - Could not complete request : status=[failed: java.lang.IllegalStateException: Cannot create a session after the response has been committed]
+		logger.error("method6");
+        model.addAttribute("testAttr", "method6 return jsp");
+        JavaBean bean = new JavaBean("m6", "m6", "m6");
+		return bean;
+	}
+	@RequestMapping(value="/method7", method=RequestMethod.GET)
+	@ModelAttribute
+	public @ResponseBody JavaBean method7(Model model) {
+		// 输出到method7。jsp JstlView - Forwarding to resource [/WEB-INF/views/method7.jsp] in InternalResourceView 'method7'
+		// HTTP Status 404 - /spring-mvc-showcase/WEB-INF/views/method7.jsp
+		// 后台DispatcherServlet - Successfully completed request
+		logger.error("method7");
+        model.addAttribute("testAttr", "method7 return method7.jsp");
+        JavaBean bean = new JavaBean("m7", "m7", "m7");
 		return bean;
 	}
 
