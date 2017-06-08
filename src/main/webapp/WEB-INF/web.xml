@@ -59,6 +59,9 @@
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
+  
+  <!-- POST请求服务调用失败 HTTP Status 403 - Expected CSRF token not found. Has your session expired? -->
+  <!--  
   <filter>
     <filter-name>csrfFilter</filter-name>
     <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
@@ -68,6 +71,7 @@
     <filter-name>csrfFilter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+  -->
   
   <filter>
     <filter-name>testFilter</filter-name>

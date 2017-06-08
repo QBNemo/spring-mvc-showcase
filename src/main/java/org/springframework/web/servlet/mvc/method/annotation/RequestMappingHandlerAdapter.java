@@ -535,6 +535,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 
 		List<ControllerAdviceBean> beans = ControllerAdviceBean.findAnnotatedBeans(getApplicationContext());
 		// order注解若无 一般是Ordered.LOWEST_PRECEDENCE
+		// ControllerAdviceBean的basePackages以.结尾 包含ControllerAdvice注解的basePackages、basePackageClasses信息
 		AnnotationAwareOrderComparator.sort(beans);
 
 		List<Object> requestResponseBodyAdviceBeans = new ArrayList<Object>();
