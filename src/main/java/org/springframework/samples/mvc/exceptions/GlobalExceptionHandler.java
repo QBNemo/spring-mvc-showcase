@@ -1,7 +1,9 @@
 package org.springframework.samples.mvc.exceptions;
 
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -20,5 +22,10 @@ public class GlobalExceptionHandler {
 	
 	private class NoUse {
 		String calss = "NoUse";
+	}
+	
+	@InitBinder
+	public void testCAIB(WebDataBinder binder) {
+		binder.toString();
 	}
 }

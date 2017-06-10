@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.xml.transform.Source;
 
+import org.springframework.act.BindController;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.InitializingBean;
@@ -41,6 +42,7 @@ import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.http.CacheControl;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -712,14 +714,26 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		// 是否支持该方法，是否要求Session存在，只做判断，不满足就抛异常
 		checkRequest(request);
 
+		// this.sessionAttributesHandlerCache没有就创建并缓存 key为handlerMethod.getBeanType()
+		// hasSessionAttributes() 如果具有@SessionAttributes注解
 		if (getSessionAttributesHandler(handlerMethod).hasSessionAttributes()) {
+			if(BindController.class.equals(handlerMethod.getBeanType())) {
+				Class<?> handlerType = handlerMethod.getBeanType();
+				SessionAttributesHandler sessionAttrHandler = this.sessionAttributesHandlerCache.get(handlerType);
+				new String();
+			}
+			
+			// this.cacheSecondsForSessionAttributeHandlers=0
+			// 默认情况 如果有@SessionAttributes注解就禁止响应缓存
 			applyCacheSeconds(response, this.cacheSecondsForSessionAttributeHandlers);
 		}
 		else {
+			// applyCacheSeconds 对响应头不做处理
 			prepareResponse(response);
 		}
 
 		// Execute invokeHandlerMethod in synchronized block if required.
+		// synchronizeOnSession = false
 		if (this.synchronizeOnSession) {
 			HttpSession session = request.getSession(false);
 			if (session != null) {

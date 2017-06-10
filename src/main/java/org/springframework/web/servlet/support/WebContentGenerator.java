@@ -319,6 +319,7 @@ public abstract class WebContentGenerator extends WebApplicationObjectSupport {
 			applyCacheControl(response, this.cacheControl);
 		}
 		else {
+			// cacheSeconds = -1
 			applyCacheSeconds(response, this.cacheSeconds);
 		}
 	}
@@ -333,6 +334,7 @@ public abstract class WebContentGenerator extends WebApplicationObjectSupport {
 		String ccValue = cacheControl.getHeaderValue();
 		if (ccValue != null) {
 			// Set computed HTTP 1.1 Cache-Control header
+			// HEADER_CACHE_CONTROL = "Cache-Control"; HEADER_PRAGMA = "Pragma"
 			response.setHeader(HEADER_CACHE_CONTROL, ccValue);
 
 			if (response.containsHeader(HEADER_PRAGMA)) {
@@ -353,6 +355,10 @@ public abstract class WebContentGenerator extends WebApplicationObjectSupport {
 	 */
 	@SuppressWarnings("deprecation")
 	protected final void applyCacheSeconds(HttpServletResponse response, int cacheSeconds) {
+		/** Use HTTP 1.0 expires header? useExpiresHeader = false; */
+		/** Use HTTP 1.1 cache-control header? useCacheControlHeader = true; useCacheControlNoStore = true; */
+		/** alwaysMustRevalidate = false; */
+		
 		if (this.useExpiresHeader || !this.useCacheControlHeader) {
 			// Deprecated HTTP 1.0 cache behavior, as in previous Spring versions
 			if (cacheSeconds > 0) {
@@ -371,6 +377,7 @@ public abstract class WebContentGenerator extends WebApplicationObjectSupport {
 				}
 			}
 			else if (cacheSeconds == 0) {
+				// noStore() preventing caches
 				cControl = (this.useCacheControlNoStore ? CacheControl.noStore() : CacheControl.noCache());
 			}
 			else {
