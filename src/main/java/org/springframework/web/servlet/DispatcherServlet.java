@@ -906,6 +906,7 @@ public class DispatcherServlet extends FrameworkServlet {
 
 		FlashMap inputFlashMap = this.flashMapManager.retrieveAndUpdate(request, response);
 		if (inputFlashMap != null) {
+			// 重定向之后inputFlashMap!=null
 			request.setAttribute(INPUT_FLASH_MAP_ATTRIBUTE, Collections.unmodifiableMap(inputFlashMap));
 		}
 		request.setAttribute(OUTPUT_FLASH_MAP_ATTRIBUTE, new FlashMap());
