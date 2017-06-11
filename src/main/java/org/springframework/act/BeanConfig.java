@@ -15,8 +15,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.samples.mvc.data.JavaBean;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.AbstractHandlerMapping;
 
 @Controller
@@ -96,6 +98,22 @@ public class BeanConfig implements ApplicationContextAware{
 		
 		String ret = "NO Session!";
 		return ret;
+	}
+	
+	@RequestMapping("/bcredirect")
+	public String redirect(HttpServletRequest req, Model model) {
+		String info = req.getRequestURI() + "/[" + req.getParameter("OA3") + "]/[" + req.getAttribute("OA3") + "]/" + req.getAttribute("OA2");
+        model.addAttribute("testAttr", "testAttr-BeanConfig-bcredirect");
+        model.addAttribute("attr2", "attr2-BeanConfig-bcredirect");
+        // mv不进入model
+        ModelAndView mv = new ModelAndView();
+        mv.addObject("testMV", "testMV-BeanConfig-bcredirect");
+        // 覆盖SA、RA同名属性
+        model.addAttribute("OA1", "OA1-BeanConfig-bcredirect");
+        model.addAttribute("OA2", "OA2-BeanConfig-bcredirect");
+        
+        model.addAttribute("info", info);
+		return "directpage";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
 	}
 
 }

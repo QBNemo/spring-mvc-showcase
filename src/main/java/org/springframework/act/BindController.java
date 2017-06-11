@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 // handler处理完将模型对象存入session status.setComplete()清除该session
 @SessionAttributes(types={JavaBean.class})
@@ -186,6 +187,23 @@ public class BindController {
         model.addAttribute("testAttr", "method7 return method7.jsp");
         JavaBean bean = new JavaBean("m7", "m7", "m7");
 		return bean;
+	}
+	
+	@RequestMapping(value="/goredirect")
+	public String goredirect(Model model, RedirectAttributes ra, HttpSession session) {
+		logger.error("goredirect");
+		// model重定向不会保留
+        model.addAttribute("testAttr", "testAttr-BindController-goredirect");
+        model.addAttribute("attr1", "attr1-BindController-goredirect");
+        // 下面的属性才会重定向传过去 addFlashAttribute
+        session.setAttribute("SA", "SA-BindController-goredirect");
+        ra.addFlashAttribute("RA", "RA-BindController-goredirect");
+        // 被重定向后的model覆盖
+        session.setAttribute("OA1", "OA1-BindController-goredirect");
+        ra.addFlashAttribute("OA2", "OA2-BindController-goredirect");
+        ra.addAttribute(     "OA3", "OA3-test");
+		return "redirect:/bcredirect";
+	
 	}
 
 }
