@@ -714,6 +714,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		// 是否支持该方法，是否要求Session存在，只做判断，不满足就抛异常
 		checkRequest(request);
 
+		// 获取SessionAttributesHandler
 		// this.sessionAttributesHandlerCache没有就创建并缓存 key为handlerMethod.getBeanType()
 		// hasSessionAttributes() 如果具有@SessionAttributes注解
 		if (getSessionAttributesHandler(handlerMethod).hasSessionAttributes()) {
@@ -861,6 +862,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 			Object bean = handlerMethod.getBean();
 			attrMethods.add(createModelAttributeMethod(binderFactory, bean, method));
 		}
+		// 来自@ModelAttribute methods 全局+controller
 		return new ModelFactory(attrMethods, binderFactory, sessionAttrHandler);
 	}
 
