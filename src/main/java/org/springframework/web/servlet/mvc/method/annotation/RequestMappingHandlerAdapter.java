@@ -16,7 +16,9 @@
 
 package org.springframework.web.servlet.mvc.method.annotation;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -30,12 +32,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.xml.transform.Source;
 
+import org.springframework.act.BeanConfig;
 import org.springframework.act.BindController;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.core.DefaultParameterNameDiscoverer;
+import org.springframework.core.MethodParameter;
 import org.springframework.core.Ordered;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
@@ -793,6 +797,19 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		ModelFactory modelFactory = getModelFactory(handlerMethod, binderFactory);
 
 		ServletInvocableHandlerMethod invocableMethod = createInvocableHandlerMethod(handlerMethod);
+		if(BeanConfig.class.equals(invocableMethod.getBeanType())) {
+			// MethodParameter属性查看 
+			MethodParameter[] mps= invocableMethod.getMethodParameters();
+			MethodParameter    mp= mps[3];
+			Type             type= mp.getGenericParameterType();
+			Annotation[]      mas= mp.getMethodAnnotations();
+			Type            ntype= mp.getNestedGenericParameterType();
+			Class          nclass= mp.getNestedParameterType();
+			Annotation[]      pas= mp.getParameterAnnotations();
+			String          pname= mp.getParameterName();
+			Class           ptype= mp.getParameterType();
+			new String();
+		}
 		invocableMethod.setHandlerMethodArgumentResolvers(this.argumentResolvers);
 		invocableMethod.setHandlerMethodReturnValueHandlers(this.returnValueHandlers);
 		invocableMethod.setDataBinderFactory(binderFactory);

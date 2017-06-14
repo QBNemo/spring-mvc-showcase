@@ -106,7 +106,7 @@ public class BeanConfig implements ApplicationContextAware{
 	@RequestMapping("/bcredirect")
 	// Mojo没有MA注解一样被放入model 即参数(集合)自动加入model
 	// List没有MA方法不行，因为没法实例化接口 而ArrayList可以
-	public String redirect(HttpServletRequest req, Model model, Mojo mojo, ArrayList<Mojo> mojoList) {
+	public String bcredirect(HttpServletRequest req, Model model, Mojo mojo, @ModelAttribute ArrayList<Mojo> mojoList) {
 		String info = req.getRequestURI() + "/[" + req.getParameter("OA3") + "]/[" + req.getAttribute("OA3") + "]/" + req.getAttribute("OA2");
         model.addAttribute("testAttr", "testAttr-BeanConfig-bcredirect");
         model.addAttribute("attr2", "attr2-BeanConfig-bcredirect");
