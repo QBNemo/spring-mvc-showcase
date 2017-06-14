@@ -53,5 +53,14 @@ ${info}<br/>
 [${OA2}]<br/>
 </div>
 
+<h1>mojo</h1>
+<div>
+${mojo}<br/>
+</div>
+
+<h1>mojoList</h1>
+<div>
+${mojoList}<br/>
+</div>
 </body>
 </html>

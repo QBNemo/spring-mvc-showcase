@@ -1,8 +1,10 @@
 package org.springframework.act;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -16,6 +18,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.samples.mvc.data.JavaBean;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -101,7 +104,9 @@ public class BeanConfig implements ApplicationContextAware{
 	}
 	
 	@RequestMapping("/bcredirect")
-	public String redirect(HttpServletRequest req, Model model) {
+	// Mojo没有MA注解一样被放入model 即参数(集合)自动加入model
+	// List没有MA方法不行，因为没法实例化接口 而ArrayList可以
+	public String redirect(HttpServletRequest req, Model model, Mojo mojo, ArrayList<Mojo> mojoList) {
 		String info = req.getRequestURI() + "/[" + req.getParameter("OA3") + "]/[" + req.getAttribute("OA3") + "]/" + req.getAttribute("OA2");
         model.addAttribute("testAttr", "testAttr-BeanConfig-bcredirect");
         model.addAttribute("attr2", "attr2-BeanConfig-bcredirect");
@@ -115,5 +120,4 @@ public class BeanConfig implements ApplicationContextAware{
         model.addAttribute("info", info);
 		return "directpage";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
 	}
-
 }
