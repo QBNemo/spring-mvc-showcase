@@ -146,6 +146,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 
 	private List<Object> requestResponseBodyAdvice = new ArrayList<Object>();
 
+	// org.springframework.web.bind.support.ConfigurableWebBindingInitializer set进去
 	private WebBindingInitializer webBindingInitializer;
 
 	private AsyncTaskExecutor taskExecutor = new SimpleAsyncTaskExecutor("MvcAsync");
@@ -368,6 +369,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 	 * to every DataBinder instance.
 	 */
 	public void setWebBindingInitializer(WebBindingInitializer webBindingInitializer) {
+		logger.error("RequestMappingHandlerAdapter setWebBindingInitializer : " + webBindingInitializer.getClass());
 		this.webBindingInitializer = webBindingInitializer;
 	}
 
@@ -792,7 +794,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 			HttpServletResponse response, HandlerMethod handlerMethod) throws Exception {
 
 		ServletWebRequest webRequest = new ServletWebRequest(request, response);
-
+        // org.springframework.web.servlet.mvc.method.annotation.ServletRequestDataBinderFactory
 		WebDataBinderFactory binderFactory = getDataBinderFactory(handlerMethod);
 		ModelFactory modelFactory = getModelFactory(handlerMethod, binderFactory);
 
@@ -880,6 +882,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 			attrMethods.add(createModelAttributeMethod(binderFactory, bean, method));
 		}
 		// 来自@ModelAttribute methods 全局+controller
+		// ModelFactory具有List<ModelMethod> modelMethods
 		return new ModelFactory(attrMethods, binderFactory, sessionAttrHandler);
 	}
 
@@ -887,6 +890,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		InvocableHandlerMethod attrMethod = new InvocableHandlerMethod(bean, method);
 		attrMethod.setHandlerMethodArgumentResolvers(this.argumentResolvers);
 		attrMethod.setParameterNameDiscoverer(this.parameterNameDiscoverer);
+		// 相比createInitBinderMethod 这里的factory多了List<InvocableHandlerMethod> initBinderMethods
 		attrMethod.setDataBinderFactory(factory);
 		return attrMethod;
 	}
@@ -901,6 +905,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		List<InvocableHandlerMethod> initBinderMethods = new ArrayList<InvocableHandlerMethod>();
 		// Global methods first
 		for (Entry<ControllerAdviceBean, Set<Method>> entry : this.initBinderAdviceCache .entrySet()) {
+			// @ControllerAdvice是否适用于当前bean
 			if (entry.getKey().isApplicableToBeanType(handlerType)) {
 				Object bean = entry.getKey().resolveBean();
 				for (Method method : entry.getValue()) {
@@ -917,6 +922,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 
 	private InvocableHandlerMethod createInitBinderMethod(Object bean, Method method) {
 		InvocableHandlerMethod binderMethod = new InvocableHandlerMethod(bean, method);
+		// 属性HandlerMethodArgumentResolverComposite argumentResolvers
 		binderMethod.setHandlerMethodArgumentResolvers(this.initBinderArgumentResolvers);
 		binderMethod.setDataBinderFactory(new DefaultDataBinderFactory(this.webBindingInitializer));
 		binderMethod.setParameterNameDiscoverer(this.parameterNameDiscoverer);
