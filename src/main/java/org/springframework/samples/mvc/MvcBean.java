@@ -1,5 +1,7 @@
 package org.springframework.samples.mvc;
 
+import java.util.Date;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
@@ -10,7 +12,7 @@ public class MvcBean {
     private static final Log logger = LogFactory.getLog(MvcBean.class);
 
     public MvcBean() {
-    	logger.error("MvcBean construct use no-arg");
+    	logger.error("MvcBean construct use no-arg :" + new Date().toLocaleString());
     }
     
     public MvcBean(String mvcBeanName) {

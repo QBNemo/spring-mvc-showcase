@@ -9,9 +9,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.support.WebDataBinderFactory;
-import org.springframework.web.method.annotation.SessionAttributesHandler;
-import org.springframework.web.method.support.InvocableHandlerMethod;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
