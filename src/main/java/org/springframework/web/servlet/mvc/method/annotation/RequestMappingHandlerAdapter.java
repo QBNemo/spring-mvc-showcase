@@ -794,8 +794,19 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 			HttpServletResponse response, HandlerMethod handlerMethod) throws Exception {
 
 		ServletWebRequest webRequest = new ServletWebRequest(request, response);
+		
+		// InvocableHandlerMethod包含WebDataBinderFactory dataBinderFactory属性
+		// createInitBinderMethod生成的InvocableHandlerMethod设置dataBinderFactory为DefaultDataBinderFactory
+		// createModelAttributeMethod生成的InvocableHandlerMethod设置dataBinderFactory为ServletRequestDataBinderFactory
+		
+		// 处理@InitBinder methods 全局+controller 构建List<InvocableHandlerMethod>
+		// createInitBinderMethod(bean, method); createDataBinderFactory(initBinderMethods)
         // org.springframework.web.servlet.mvc.method.annotation.ServletRequestDataBinderFactory
+		// ServletRequestDataBinderFactory->[InitBinderDataBinderFactory]->DefaultDataBinderFactory>>WebDataBinderFactory
 		WebDataBinderFactory binderFactory = getDataBinderFactory(handlerMethod);
+		
+		// 处理@ModelAttribute methods(不含@RequestMapping) 全局+controller 构建List<InvocableHandlerMethod>
+		// createModelAttributeMethod(binderFactory, bean, method); 
 		ModelFactory modelFactory = getModelFactory(handlerMethod, binderFactory);
 
 		ServletInvocableHandlerMethod invocableMethod = createInvocableHandlerMethod(handlerMethod);
@@ -860,10 +871,12 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 	}
 
 	private ModelFactory getModelFactory(HandlerMethod handlerMethod, WebDataBinderFactory binderFactory) {
+		// handleInternal已经调用过getSessionAttributesHandler 直接读缓存
 		SessionAttributesHandler sessionAttrHandler = getSessionAttributesHandler(handlerMethod);
 		Class<?> handlerType = handlerMethod.getBeanType();
 		Set<Method> methods = this.modelAttributeCache.get(handlerType);
 		if (methods == null) {
+			// @ModelAttribute注解且没有@RequestMapping的方法
 			methods = HandlerMethodSelector.selectMethods(handlerType, MODEL_ATTRIBUTE_METHODS);
 			this.modelAttributeCache.put(handlerType, methods);
 		}
@@ -881,16 +894,19 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 			Object bean = handlerMethod.getBean();
 			attrMethods.add(createModelAttributeMethod(binderFactory, bean, method));
 		}
-		// 来自@ModelAttribute methods 全局+controller
-		// ModelFactory具有List<ModelMethod> modelMethods
+		// ModelFactory具有List<ModelMethod> modelMethods, ModelMethod是对InvocableHandlerMethod(MODEL_ATTRIBUTE_METHODS)的包装, 在过程中检查方法参数是否具有@ModelAttribute
 		return new ModelFactory(attrMethods, binderFactory, sessionAttrHandler);
 	}
 
 	private InvocableHandlerMethod createModelAttributeMethod(WebDataBinderFactory factory, Object bean, Method method) {
 		InvocableHandlerMethod attrMethod = new InvocableHandlerMethod(bean, method);
+		// 给InvocableHandlerMethod属性argumentResolvers赋值，类型为HandlerMethodArgumentResolverComposite
+		// createInitBinderMethod传递this.initBinderArgumentResolvers
 		attrMethod.setHandlerMethodArgumentResolvers(this.argumentResolvers);
 		attrMethod.setParameterNameDiscoverer(this.parameterNameDiscoverer);
-		// 相比createInitBinderMethod 这里的factory多了List<InvocableHandlerMethod> initBinderMethods
+		// ServletRequestDataBinderFactory->[InitBinderDataBinderFactory]->DefaultDataBinderFactory>>WebDataBinderFactory
+		// createInitBinderMethod传入DefaultDataBinderFactory
+		// 这里传入ServletRequestDataBinderFactory(InitBinderDataBinderFactory),多了List<InvocableHandlerMethod> binderMethods
 		attrMethod.setDataBinderFactory(factory);
 		return attrMethod;
 	}
@@ -922,8 +938,10 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 
 	private InvocableHandlerMethod createInitBinderMethod(Object bean, Method method) {
 		InvocableHandlerMethod binderMethod = new InvocableHandlerMethod(bean, method);
-		// 属性HandlerMethodArgumentResolverComposite argumentResolvers
+		// 给InvocableHandlerMethod属性argumentResolvers赋值，类型为HandlerMethodArgumentResolverComposite
+		// createModelAttributeMethod传递this.argumentResolvers
 		binderMethod.setHandlerMethodArgumentResolvers(this.initBinderArgumentResolvers);
+		// DefaultDataBinderFactory
 		binderMethod.setDataBinderFactory(new DefaultDataBinderFactory(this.webBindingInitializer));
 		binderMethod.setParameterNameDiscoverer(this.parameterNameDiscoverer);
 		return binderMethod;
