@@ -36,6 +36,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.act.ActUtil;
+import org.springframework.act.Embed;
 import org.springframework.act.RootContextBean;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.BeanFactory;
@@ -638,6 +639,10 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 					}
 				}
 			}
+			
+			// 测试容器对内部类的管理
+			Collection<Embed> eNotIn = BeanFactoryUtils.beansOfTypeIncludingAncestors(wac.getParent(), Embed.class, true, false).values();
+			Collection<Embed> eIn    = BeanFactoryUtils.beansOfTypeIncludingAncestors(wac            , Embed.class, true, false).values();
 			
 			this.logger.debug("FrameworkServlet '" + getServletName() + "'" 
 			    +"\n\twebApplicationContext : " + ActUtil.hashCode(wac)

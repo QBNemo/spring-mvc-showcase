@@ -894,7 +894,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 			Object bean = handlerMethod.getBean();
 			attrMethods.add(createModelAttributeMethod(binderFactory, bean, method));
 		}
-		// ModelFactory具有List<ModelMethod> modelMethods, ModelMethod是对InvocableHandlerMethod(MODEL_ATTRIBUTE_METHODS)的包装, 在过程中检查方法参数是否具有@ModelAttribute
+		// ModelFactory具有List<ModelMethod> modelMethods, ModelMethod是对InvocableHandlerMethod(MODEL_ATTRIBUTE_METHODS)的包装, 在过程中检查方法参数是否具有@ModelAttribute,设置dependencies
 		return new ModelFactory(attrMethods, binderFactory, sessionAttrHandler);
 	}
 
