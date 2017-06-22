@@ -47,6 +47,7 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.http.CacheControl;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -809,6 +810,8 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		// createModelAttributeMethod(binderFactory, bean, method); 
 		ModelFactory modelFactory = getModelFactory(handlerMethod, binderFactory);
 
+		// ServletInvocableHandlerMethod->InvocableHandlerMethod->HandlerMethod
+		// ServletInvocableHandlerMethod 包含属性HttpStatus responseStatus, String responseReason, HandlerMethodReturnValueHandlerComposite returnValueHandlers
 		ServletInvocableHandlerMethod invocableMethod = createInvocableHandlerMethod(handlerMethod);
 		if(BeanConfig.class.equals(invocableMethod.getBeanType())) {
 			// MethodParameter属性查看 
