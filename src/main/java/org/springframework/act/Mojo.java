@@ -10,7 +10,7 @@ public class Mojo {
     private static final Log logger = LogFactory.getLog(Mojo.class);
     
     public Mojo() {
-    	logger.error("Mojo construct use no-arg ： " + new Date().toLocaleString());
+    	logger.error("Mojo construct use no-arg :" + new Date().toLocaleString());
     }
     
     public Mojo(String mojoName) {
