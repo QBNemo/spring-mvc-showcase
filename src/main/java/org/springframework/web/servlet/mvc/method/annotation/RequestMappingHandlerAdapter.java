@@ -98,6 +98,7 @@ import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandlerComposite;
 import org.springframework.web.method.support.InvocableHandlerMethod;
 import org.springframework.web.method.support.ModelAndViewContainer;
+import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.mvc.annotation.ModelAndViewResolver;
@@ -832,7 +833,12 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		invocableMethod.setParameterNameDiscoverer(this.parameterNameDiscoverer);
 
 		ModelAndViewContainer mavContainer = new ModelAndViewContainer();
+		// DispatcherServlet doService request.setAttribute[INPUT_FLASH_MAP_ATTRIBUTE]
+		Map<String, ?> inputFlashMap = (Map<String, ?>) request.getAttribute(DispatcherServlet.INPUT_FLASH_MAP_ATTRIBUTE);
+		// getModel().addAllAttributes(inputFlashMap);
 		mavContainer.addAllAttributes(RequestContextUtils.getInputFlashMap(request));
+		// getModel().mergeAttributes(sessionAttributeMap);
+		// 调用this.sessionAttributesHandler.retrieveAttributes(request); invokeModelAttributeMethods(request, mavContainer) 
 		modelFactory.initModel(webRequest, mavContainer, invocableMethod);
 		mavContainer.setIgnoreDefaultModelOnRedirect(this.ignoreDefaultModelOnRedirect);
 

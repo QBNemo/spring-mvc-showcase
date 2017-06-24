@@ -57,6 +57,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.servlet.handler.AbstractHandlerMapping;
 import org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter;
+import org.springframework.web.servlet.support.RequestContextUtils;
 import org.springframework.web.util.NestedServletException;
 import org.springframework.web.util.WebUtils;
 import org.springframework.act.ActUtil;
@@ -907,6 +908,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		FlashMap inputFlashMap = this.flashMapManager.retrieveAndUpdate(request, response);
 		if (inputFlashMap != null) {
 			// 重定向之后inputFlashMap!=null
+			// Adapter中获取 RequestMappingHandlerAdapter invokeHandlerMethod RequestContextUtils.getInputFlashMap(request)
 			request.setAttribute(INPUT_FLASH_MAP_ATTRIBUTE, Collections.unmodifiableMap(inputFlashMap));
 		}
 		request.setAttribute(OUTPUT_FLASH_MAP_ATTRIBUTE, new FlashMap());
