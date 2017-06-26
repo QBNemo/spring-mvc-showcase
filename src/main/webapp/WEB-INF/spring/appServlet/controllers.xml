@@ -18,4 +18,5 @@
 	<bean id="BB" name="BB2,AliBB" class="org.springframework.act.BB"></bean>
 	<bean id="aC" class="org.springframework.act.AbcCtr"></bean>
 	<bean id="bc" class="org.springframework.act.BindController"></bean>
+	<bean id="sac" class="org.springframework.act.SaController"></bean>
 </beans>
