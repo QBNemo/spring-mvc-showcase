@@ -792,6 +792,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 	 * @since 4.2
 	 * @see #createInvocableHandlerMethod(HandlerMethod)
 	 */
+	@SuppressWarnings("unused")
 	protected ModelAndView invokeHandlerMethod(HttpServletRequest request,
 			HttpServletResponse response, HandlerMethod handlerMethod) throws Exception {
 
@@ -835,6 +836,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		ModelAndViewContainer mavContainer = new ModelAndViewContainer();
 		// DispatcherServlet doService request.setAttribute[INPUT_FLASH_MAP_ATTRIBUTE]
 		Map<String, ?> inputFlashMap = (Map<String, ?>) request.getAttribute(DispatcherServlet.INPUT_FLASH_MAP_ATTRIBUTE);
+		Set<String> keys = inputFlashMap.keySet();
 		// getModel().addAllAttributes(inputFlashMap);
 		mavContainer.addAllAttributes(RequestContextUtils.getInputFlashMap(request));
 		// getModel().mergeAttributes(sessionAttributeMap);

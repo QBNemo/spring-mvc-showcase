@@ -32,13 +32,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class SaController {
 	private final Log logger = LogFactory.getLog(getClass());
 	
-	@InitBinder("mojo")
+	//@InitBinder("mojo")
 	// 存在同名模型对象就运行(反射生成的也行) 否则不运行 假如存在@ModelAttribute("javaBean1")方法，则每个处理器方法运行前都执行
 	public void mojoIB(WebDataBinder binder){
 		logger.error("initBinder-mojo");
 	}
 
-	@ModelAttribute
+	//@ModelAttribute
 	// 测试没有@ModelAttribute
 	public Mojo mojoMA() {
 		// 处理器方法前始终执行
