@@ -34,6 +34,7 @@ import javax.xml.transform.Source;
 
 import org.springframework.act.BeanConfig;
 import org.springframework.act.BindController;
+import org.springframework.act.Mojo;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.InitializingBean;
@@ -174,12 +175,12 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 
 	private final Map<Class<?>, SessionAttributesHandler> sessionAttributesHandlerCache =
 			new ConcurrentHashMap<Class<?>, SessionAttributesHandler>(64);
-
+    // Bean层面
 	private final Map<Class<?>, Set<Method>> initBinderCache = new ConcurrentHashMap<Class<?>, Set<Method>>(64);
 
 	private final Map<ControllerAdviceBean, Set<Method>> initBinderAdviceCache =
 			new LinkedHashMap<ControllerAdviceBean, Set<Method>>();
-
+    // Bean层面
 	private final Map<Class<?>, Set<Method>> modelAttributeCache = new ConcurrentHashMap<Class<?>, Set<Method>>(64);
 
 	private final Map<ControllerAdviceBean, Set<Method>> modelAttributeAdviceCache =
@@ -722,7 +723,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		// 是否支持该方法，是否要求Session存在，只做判断，不满足就抛异常
 		checkRequest(request);
 
-		// 获取SessionAttributesHandler
+		// 获取SessionAttributesHandler Bean层面而不是Method层面  getModelFactory内亦调用
 		// this.sessionAttributesHandlerCache没有就创建并缓存 key为handlerMethod.getBeanType()
 		// hasSessionAttributes() 如果具有@SessionAttributes注解
 		if (getSessionAttributesHandler(handlerMethod).hasSessionAttributes()) {
@@ -798,7 +799,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 
 		ServletWebRequest webRequest = new ServletWebRequest(request, response);
 		
-		// InvocableHandlerMethod包含WebDataBinderFactory dataBinderFactory属性
+		// InvocableHandlerMethod包含WebDataBinderFactory：dataBinderFactory属性
 		// createInitBinderMethod生成的InvocableHandlerMethod设置dataBinderFactory为DefaultDataBinderFactory
 		// createModelAttributeMethod生成的InvocableHandlerMethod设置dataBinderFactory为ServletRequestDataBinderFactory
 		
@@ -810,6 +811,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		
 		// 处理@ModelAttribute methods(不含@RequestMapping) 全局+controller 构建List<InvocableHandlerMethod>
 		// createModelAttributeMethod(binderFactory, bean, method); 
+		// 关注ModelMethod,MethodParameter GlobalExceptionHandler : NoUse testCAMA(@ModelAttribute("mojo") Mojo mojo)
 		ModelFactory modelFactory = getModelFactory(handlerMethod, binderFactory);
 
 		// ServletInvocableHandlerMethod->InvocableHandlerMethod->HandlerMethod
@@ -952,7 +954,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		// 给InvocableHandlerMethod属性argumentResolvers赋值，类型为HandlerMethodArgumentResolverComposite
 		// createModelAttributeMethod传递this.argumentResolvers
 		binderMethod.setHandlerMethodArgumentResolvers(this.initBinderArgumentResolvers);
-		// DefaultDataBinderFactory
+		// DefaultDataBinderFactory implements WebDataBinderFactory
 		binderMethod.setDataBinderFactory(new DefaultDataBinderFactory(this.webBindingInitializer));
 		binderMethod.setParameterNameDiscoverer(this.parameterNameDiscoverer);
 		return binderMethod;
