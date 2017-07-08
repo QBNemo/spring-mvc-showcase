@@ -816,6 +816,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 
 		// ServletInvocableHandlerMethod->InvocableHandlerMethod->HandlerMethod
 		// ServletInvocableHandlerMethod 包含属性HttpStatus responseStatus, String responseReason, HandlerMethodReturnValueHandlerComposite returnValueHandlers
+		// 处理@ResponseStatus注解
 		ServletInvocableHandlerMethod invocableMethod = createInvocableHandlerMethod(handlerMethod);
 		if(BeanConfig.class.equals(invocableMethod.getBeanType())) {
 			// MethodParameter属性查看 
