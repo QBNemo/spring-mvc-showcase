@@ -47,6 +47,7 @@ public class BindController {
 	}
 	
 	@ModelAttribute
+	// @ModelAttribute的value为"", 返回值名称为javaBeanList
 	public List<JavaBean> method0() {
 		logger.error("methodList");
 		JavaBean bean1 = new JavaBean("b11", "b12", "b13");
@@ -55,6 +56,7 @@ public class BindController {
 	}
 	
 	@ModelAttribute
+	// 见ModelFactory的两个方法知MA方法的调用时机,给value赋值也更高效：initModel invokeModelAttributeMethods
 	public JavaBean method00() {
 		// 处理器方法前始终执行
 		logger.error("method00");
@@ -83,7 +85,8 @@ public class BindController {
 	//@ModelAttribute("jb1")的value需要跟前面@InitBinder("jb1")相匹配，这样才能指定走哪一个验证
 	public ModelAndView method1(Model model, @Valid @ModelAttribute("javaBean1") JavaBean In, HttpServletRequest request) {
 		logger.error("method1");
-		// In自动暴露到模型对象  模型对象有就直接使用，没有就反射创建一个  org.springframework.web.method.annotation.ModelFactory.initModel 
+		// In自动暴露到模型对象  模型对象有就直接使用，没有就反射创建一个  ModelFactory:initModel->invokeModelAttributeMethods(request, mavContainer) 
+		// InvocableHandlerMethod invokeForRequest->getMethodArgumentValues(request, mavContainer, providedArgs)
 		// @SessionAttributes注解控制器内后 始终从模型对象取同名对象
 		// http://localhost:8080/spring-mvc-showcase/method1?param1=x&param2=y
 		//Object ob = session.getAttribute("javaBean");
@@ -190,6 +193,7 @@ public class BindController {
 	}
 	
 	@RequestMapping(value="/goredirect")
+	// 重定向->
 	public String goredirect(Model model, RedirectAttributes ra, HttpSession session) {
 		logger.error("goredirect");
 		// model重定向不会保留
@@ -203,7 +207,18 @@ public class BindController {
         ra.addFlashAttribute("OA2", "OA2-BindController-goredirect");
         ra.addAttribute(     "OA3", "OA3-test");
 		return "redirect:/bcredirect";
-	
+	    /*
+	        FlashMap [
+	            attributes={
+		            OA2=OA2-BindController-goredirect, 
+			        RA=RA-BindController-goredirect
+		        }, 
+		        targetRequestPath=/spring-mvc-showcase/bcredirect, 
+		        targetRequestParams={
+		            OA3=[OA3-test]
+		        }
+	        ]
+	    */
 	}
 
 }

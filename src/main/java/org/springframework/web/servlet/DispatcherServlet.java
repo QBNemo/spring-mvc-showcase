@@ -887,6 +887,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		// Keep a snapshot of the request attributes in case of an include,
 		// to be able to restore the original attributes after the include.
 		/** 对include类型的请求转发保存属性 */
+		/* include request, that is, not a top-level HTTP request coming in from the outside. Checks the presence of the "javax.servlet.include.request_uri" request attribute*/
 		Map<String, Object> attributesSnapshot = null;
 		if (WebUtils.isIncludeRequest(request)) {
 			attributesSnapshot = new HashMap<String, Object>();

@@ -814,6 +814,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		// 关注ModelMethod,MethodParameter GlobalExceptionHandler : NoUse testCAMA(@ModelAttribute("mojo") Mojo mojo)
 		ModelFactory modelFactory = getModelFactory(handlerMethod, binderFactory);
 
+		// 封装handlerMethod
 		// ServletInvocableHandlerMethod->InvocableHandlerMethod->HandlerMethod
 		// ServletInvocableHandlerMethod 包含属性HttpStatus responseStatus, String responseReason, HandlerMethodReturnValueHandlerComposite returnValueHandlers
 		// 处理@ResponseStatus注解
@@ -832,6 +833,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 			new String();
 		}
 		invocableMethod.setHandlerMethodArgumentResolvers(this.argumentResolvers);
+		// 属性HandlerMethodReturnValueHandlerComposite:returnValueHandlers,ServletInvocableHandlerMethod独有
 		invocableMethod.setHandlerMethodReturnValueHandlers(this.returnValueHandlers);
 		invocableMethod.setDataBinderFactory(binderFactory);
 		invocableMethod.setParameterNameDiscoverer(this.parameterNameDiscoverer);
@@ -839,7 +841,6 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		ModelAndViewContainer mavContainer = new ModelAndViewContainer();
 		// DispatcherServlet doService request.setAttribute[INPUT_FLASH_MAP_ATTRIBUTE]
 		Map<String, ?> inputFlashMap = (Map<String, ?>) request.getAttribute(DispatcherServlet.INPUT_FLASH_MAP_ATTRIBUTE);
-		Set<String> keys = inputFlashMap.keySet();
 		// getModel().addAllAttributes(inputFlashMap);
 		mavContainer.addAllAttributes(RequestContextUtils.getInputFlashMap(request));
 		// getModel().mergeAttributes(sessionAttributeMap);
