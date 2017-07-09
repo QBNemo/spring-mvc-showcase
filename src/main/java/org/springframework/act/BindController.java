@@ -5,11 +5,13 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.core.MethodParameter;
 import org.springframework.samples.mvc.data.JavaBean;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +26,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -219,6 +225,22 @@ public class BindController {
 		        }
 	        ]
 	    */
+		/*
+		mavContainer.getModel(): defaultMap->redirectModel redirectModel的使用仅仅在这之后，新请求之前：
+		RequestMappingHandlerAdapter: ModelAndView invokeHandlerMethod(HttpServletRequest request,HttpServletResponse response, HandlerMethod handlerMethod)
+		                             invocableMethod.invokeAndHandle(webRequest, mavContainer)
+		ServletInvocableHandlerMethod: void invokeAndHandle(ServletWebRequest webRequest,ModelAndViewContainer mavContainer, Object... providedArgs)                             
+		                              this.returnValueHandlers.handleReturnValue(returnValue, getReturnValueType(returnValue), mavContainer, webRequest)
+		HandlerMethodReturnValueHandlerComposite: void handleReturnValue(Object returnValue, MethodParameter returnType,ModelAndViewContainer mavContainer, NativeWebRequest webRequest)
+		                                          handler.handleReturnValue(returnValue, returnType, mavContainer, webRequest)
+		ViewNameMethodReturnValueHandler: void handleReturnValue(Object returnValue, MethodParameter returnType,ModelAndViewContainer mavContainer, NativeWebRequest webRequest)
+		                                  mavContainer.setViewName(viewName); viewName = "redirect:/bcredirect"
+		                                  mavContainer.setRedirectModelScenario(true);                                  
+		*/
+		/*
+		RequestMappingHandlerAdapter invocableMethod.invokeAndHandle(webRequest, mavContainer)之后
+		ModelAndViewContainer : redirectMap: {OA3=OA3-test}, redirectMap的flashAttributes: {RA=RA-BindController-goredirect, OA2=OA2-BindController-goredirect}
+		*/
 	}
 
 }
