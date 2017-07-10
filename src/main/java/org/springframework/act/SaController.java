@@ -1,6 +1,7 @@
 package org.springframework.act;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -32,14 +33,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class SaController {
 	private final Log logger = LogFactory.getLog(getClass());
 	
-	//@InitBinder("mojo")
-	// 存在同名模型对象就运行(反射生成的也行) 否则不运行 假如存在@ModelAttribute("javaBean1")方法，则每个处理器方法运行前都执行
+	@InitBinder("mojo")
+	// 存在同名模型对象就运行(反射生成的也行) 否则不运行 假如存在@ModelAttribute("mojo")方法，则每个处理器方法运行前都执行
 	public void mojoIB(WebDataBinder binder){
-		logger.error("initBinder-mojo");
+		Date now = new Date();
+		logger.error("initBinder-mojo " + now.toLocaleString());
 	}
 
-	//@ModelAttribute
-	// 测试没有@ModelAttribute
+	@ModelAttribute("mojo")
 	public Mojo mojoMA() {
 		// 处理器方法前始终执行
 		logger.error("modelAttribute-mojo");
@@ -47,6 +48,7 @@ public class SaController {
 		return m;
 	}
 	
+	// method1,method2的参数Mojo in都是自动从模型对象取 @ModelAttribute("mojo")注解在于提供取值名称
 	@RequestMapping(value="/sa", method=RequestMethod.GET)
 	@ModelAttribute
 	public Mojo method1(Model model, @ModelAttribute("mojo") Mojo in, HttpServletRequest request) {
@@ -58,20 +60,22 @@ public class SaController {
 		
 		Map<String, Object> map = model.asMap();
 		// 方法返回后bean存入模型对象
-		Object m = map.get("Mojo");
+		Object m = map.get("mojo");
 		Mojo out = new Mojo("m'In:sa");
+		map.put("mojo", out);
 		return out;
 	}
 	
 	@RequestMapping(value="/sa2", method=RequestMethod.GET)
 	@ModelAttribute
-	public Mojo method2(Model model, Mojo in, HttpServletRequest request) {
+	public Mojo method2(Model model, Mojo in, JavaBean bean, HttpServletRequest request) {
 		logger.error("sa2");
 		
 		Map<String, Object> map = model.asMap();
 		// 方法返回后bean存入模型对象
-		Object m = map.get("Mojo");
+		Object m = map.get("mojo");
 		Mojo out = new Mojo("m'In:sa2");
+		map.put("mojo", out);
 		return out;
 	}
 }

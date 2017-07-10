@@ -838,13 +838,25 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		invocableMethod.setDataBinderFactory(binderFactory);
 		invocableMethod.setParameterNameDiscoverer(this.parameterNameDiscoverer);
 
+		// initModel前先查看session内容,对比ModelFactory: Map<String, ?> sessionAttributes = this.sessionAttributesHandler.retrieveAttributes(request);
+		HttpSession session = request.getSession(false);
+		if(session!=null) {
+		    Object oMojo = session.getAttribute("mojo");
+		    Object oBean = session.getAttribute("javaBean");
+		    new String();
+		}
 		ModelAndViewContainer mavContainer = new ModelAndViewContainer();
 		// DispatcherServlet doService request.setAttribute[INPUT_FLASH_MAP_ATTRIBUTE]
 		Map<String, ?> inputFlashMap = (Map<String, ?>) request.getAttribute(DispatcherServlet.INPUT_FLASH_MAP_ATTRIBUTE);
 		// getModel().addAllAttributes(inputFlashMap);
 		mavContainer.addAllAttributes(RequestContextUtils.getInputFlashMap(request));
+		// 调用MA注解的方法 全局+controller MA的调用顺序,是否调用由ModelFactory: void invokeModelAttributeMethods(NativeWebRequest request, ModelAndViewContainer mavContainer)决定
 		// getModel().mergeAttributes(sessionAttributeMap);
-		// 调用this.sessionAttributesHandler.retrieveAttributes(request); invokeModelAttributeMethods(request, mavContainer) 
+		// ModelFactory: void invokeModelAttributeMethods(NativeWebRequest request, ModelAndViewContainer mavContainer)
+		//               Object returnValue = attrMethod.invokeForRequest(request, mavContainer); 
+		// InvocableHandlerMethod: Object invokeForRequest(NativeWebRequest request, ModelAndViewContainer mavContainer,Object... providedArgs)
+		//                         Object[] args = getMethodArgumentValues(request, mavContainer, providedArgs)
+		// ModelAttributeMethodProcessor: Object resolveArgument(MethodParameter parameter,ModelAndViewContainer mavContainer,NativeWebRequest webRequest,WebDataBinderFactory binderFactory)解析MA注解方法的参数(带MA注解的参数必要时反射生成,并加入mavContainer)
 		modelFactory.initModel(webRequest, mavContainer, invocableMethod);
 		mavContainer.setIgnoreDefaultModelOnRedirect(this.ignoreDefaultModelOnRedirect);
 

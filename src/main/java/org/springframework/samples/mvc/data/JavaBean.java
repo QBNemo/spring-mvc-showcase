@@ -1,5 +1,7 @@
 package org.springframework.samples.mvc.data;
 
+import java.util.Date;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.act.ActUtil;
@@ -41,7 +43,8 @@ public class JavaBean {
 	}
 	
 	public JavaBean() {
-		logger.error("JavaBean() " + this.toString() );
+		Date now = new Date();
+		logger.error("JavaBean() " + this.toString() + " " + now.toLocaleString());
 	}
 	
 	public JavaBean(String param1, String param2, String param3) {
