@@ -40,7 +40,7 @@ public class SaController {
 		logger.error("initBinder-mojo " + now.toLocaleString());
 	}
 
-	@ModelAttribute("mojo")
+	@ModelAttribute("mojo") // 加上value,更高效,减少MA方法调用次数
 	public Mojo mojoMA() {
 		// 处理器方法前始终执行
 		logger.error("modelAttribute-mojo");
