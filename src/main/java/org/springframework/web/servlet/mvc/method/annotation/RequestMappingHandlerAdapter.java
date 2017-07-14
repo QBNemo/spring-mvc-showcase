@@ -884,6 +884,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 			return null;
 		}
 
+		// 调用modelFactory.updateModel(webRequest, mavContainer)
 		return getModelAndView(mavContainer, modelFactory, webRequest);
 	}
 
