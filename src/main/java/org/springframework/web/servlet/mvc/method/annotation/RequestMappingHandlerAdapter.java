@@ -63,6 +63,7 @@ import org.springframework.web.accept.ContentNegotiationManager;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.support.DefaultDataBinderFactory;
 import org.springframework.web.bind.support.DefaultSessionAttributeStore;
 import org.springframework.web.bind.support.SessionAttributeStore;
@@ -822,6 +823,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		if(BeanConfig.class.equals(invocableMethod.getBeanType())) {
 			// MethodParameter属性查看 
 			MethodParameter[] mps= invocableMethod.getMethodParameters();
+			if(mps.length >=3) {
 			MethodParameter    mp= mps[3];
 			Type             type= mp.getGenericParameterType();
 			Annotation[]      mas= mp.getMethodAnnotations();
@@ -830,6 +832,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 			Annotation[]      pas= mp.getParameterAnnotations();
 			String          pname= mp.getParameterName();
 			Class           ptype= mp.getParameterType();
+			}
 			new String();
 		}
 		invocableMethod.setHandlerMethodArgumentResolvers(this.argumentResolvers);
@@ -850,7 +853,8 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		Map<String, ?> inputFlashMap = (Map<String, ?>) request.getAttribute(DispatcherServlet.INPUT_FLASH_MAP_ATTRIBUTE);
 		// getModel().addAllAttributes(inputFlashMap);
 		mavContainer.addAllAttributes(RequestContextUtils.getInputFlashMap(request));
-		// 调用MA注解的方法 全局+controller MA的调用顺序,是否调用由ModelFactory: void invokeModelAttributeMethods(NativeWebRequest request, ModelAndViewContainer mavContainer)决定
+		// 调用MA注解的方法 全局+controller: SaController 
+		// MA注解方法的调用顺序,是否调用由ModelFactory: void invokeModelAttributeMethods(NativeWebRequest request, ModelAndViewContainer mavContainer)决定
 		// getModel().mergeAttributes(sessionAttributeMap);
 		// ModelFactory: void invokeModelAttributeMethods(NativeWebRequest request, ModelAndViewContainer mavContainer)
 		//               Object returnValue = attrMethod.invokeForRequest(request, mavContainer); 
@@ -878,13 +882,19 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 			}
 			invocableMethod = invocableMethod.wrapConcurrentResult(result);
 		}
-
+        
+		// 处理返回值: BeanConfig
+		// 对象                                       ModelAttributeMethodProcessor: void handleReturnValue(Object returnValue,MethodParameter returnType,ModelAndViewContainer mavContainer,NativeWebRequest webRequest)
+		// @ResponseBody RequestResponseBodyMethodProcessor: void handleReturnValue(Object returnValue,MethodParameter returnType,ModelAndViewContainer mavContainer,NativeWebRequest webRequest)
+		// String        ViewNameMethodReturnValueHandler: void handleReturnValue(Object returnValue,MethodParameter returnType,ModelAndViewContainer mavContainer,NativeWebRequest webRequest)
+		//               如果是重定向视图名称: mavContainer.setRedirectModelScenario(true);
 		invocableMethod.invokeAndHandle(webRequest, mavContainer);
 		if (asyncManager.isConcurrentHandlingStarted()) {
 			return null;
 		}
 
-		// 调用modelFactory.updateModel(webRequest, mavContainer)
+		// 调用modelFactory.updateModel(webRequest, mavContainer) sessionAttributesHandler.storeAttributes
+		// RequestContextUtils.getOutputFlashMap(request).putAll(flashAttributes);
 		return getModelAndView(mavContainer, modelFactory, webRequest);
 	}
 

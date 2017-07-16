@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -20,7 +21,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.AbstractHandlerMapping;
 
@@ -119,5 +122,20 @@ public class BeanConfig implements ApplicationContextAware{
         
         model.addAttribute("info", info);
 		return "directpage";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+	}
+	
+	@RequestMapping(value="/bcmojo", method=RequestMethod.GET)
+	//@ModelAttribute 没有注解 一样放入ModelAndViewContainer mavContainer
+	public Mojo bcmojo(Model model, HttpServletRequest request) {
+		logger.error("bcmojo");
+
+		HttpSession session = request.getSession(false);
+		if(session!=null) {
+		}
+		
+		Map<String, Object> map = model.asMap();
+		Mojo out = new Mojo("m'In:bcmojo");
+		map.put("mojo", out);
+		return out;
 	}
 }
