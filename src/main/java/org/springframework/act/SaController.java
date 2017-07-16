@@ -34,7 +34,7 @@ public class SaController {
 	private final Log logger = LogFactory.getLog(getClass());
 	
 	@InitBinder("mojo")
-	// 存在同名模型对象就运行(反射生成的也行) 否则不运行 假如存在@ModelAttribute("mojo")方法，则每个处理器方法运行前都执行
+	// 存在同名模型对象就运行(反射生成的也行) 否则不运行 假如存在@ModelAttribute("mojo")方法，则每个处理器方法运行[]都执行
 	public void mojoIB(WebDataBinder binder){
 		Date now = new Date();
 		logger.error("initBinder-mojo " + now.toLocaleString());
