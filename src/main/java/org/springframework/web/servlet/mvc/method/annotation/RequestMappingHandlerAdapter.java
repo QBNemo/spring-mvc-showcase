@@ -894,7 +894,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 			return null;
 		}
 
-		// 调用modelFactory.updateModel(webRequest, mavContainer) sessionAttributesHandler.storeAttributes
+		// 调用modelFactory.updateModel(webRequest, mavContainer) :sessionAttributesHandler.storeAttributes / updateBindingResult(request, defaultModel);
 		// RequestContextUtils.getOutputFlashMap(request).putAll(flashAttributes);
 		return getModelAndView(mavContainer, modelFactory, webRequest);
 	}
