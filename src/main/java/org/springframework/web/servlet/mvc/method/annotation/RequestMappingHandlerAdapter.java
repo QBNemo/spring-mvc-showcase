@@ -888,6 +888,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		// @ResponseBody RequestResponseBodyMethodProcessor: void handleReturnValue(Object returnValue,MethodParameter returnType,ModelAndViewContainer mavContainer,NativeWebRequest webRequest)
 		// String        ViewNameMethodReturnValueHandler: void handleReturnValue(Object returnValue,MethodParameter returnType,ModelAndViewContainer mavContainer,NativeWebRequest webRequest)
 		//               如果是重定向视图名称: mavContainer.setRedirectModelScenario(true);
+		// 设置redirectModel: Object returnValue = invokeForRequest(webRequest, mavContainer, providedArgs);
 		invocableMethod.invokeAndHandle(webRequest, mavContainer);
 		if (asyncManager.isConcurrentHandlingStarted()) {
 			return null;
