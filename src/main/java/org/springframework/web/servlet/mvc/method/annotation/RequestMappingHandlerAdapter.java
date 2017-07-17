@@ -60,6 +60,7 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils.MethodFilter;
 import org.springframework.web.accept.ContentNegotiationManager;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -896,6 +897,8 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 
 		// 调用modelFactory.updateModel(webRequest, mavContainer) :sessionAttributesHandler.storeAttributes / updateBindingResult(request, defaultModel);
 		// RequestContextUtils.getOutputFlashMap(request).putAll(flashAttributes);
+		// DefaultDataBinderFactory: WebDataBinder createBinder(NativeWebRequest webRequest, Object target, String objectName)
+		//                           initBinder(dataBinder, webRequest)调用Controller内@InitBinder注解的方法
 		return getModelAndView(mavContainer, modelFactory, webRequest);
 	}
 
