@@ -890,6 +890,8 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		// String        ViewNameMethodReturnValueHandler: void handleReturnValue(Object returnValue,MethodParameter returnType,ModelAndViewContainer mavContainer,NativeWebRequest webRequest)
 		//               如果是重定向视图名称: mavContainer.setRedirectModelScenario(true);
 		// 设置redirectModel: Object returnValue = invokeForRequest(webRequest, mavContainer, providedArgs);
+		// InvocableHandlerMethod: Object invokeForRequest(NativeWebRequest request, ModelAndViewContainer mavContainer,Object... providedArgs)
+		//                         Object[] args = getMethodArgumentValues(request, mavContainer, providedArgs) //调用@InitBinder注解的方法，并校验
 		invocableMethod.invokeAndHandle(webRequest, mavContainer);
 		if (asyncManager.isConcurrentHandlingStarted()) {
 			return null;
