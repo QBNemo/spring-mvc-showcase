@@ -81,6 +81,9 @@ public class ServletModelAttributeMethodProcessor extends ModelAttributeMethodPr
 		return super.createAttribute(attributeName, methodParam, binderFactory, request);
 	}
 
+	// Resolve the argument from the model or if not found instantiate it with its default if it is available
+	// ModelAttributeMethodProcessor: final Object resolveArgument(MethodParameter parameter,ModelAndViewContainer mavContainer,NativeWebRequest webRequest,WebDataBinderFactory binderFactory)
+	
 	/**
 	 * Obtain a value from the request that may be used to instantiate the
 	 * model attribute through type conversion from String to the target type.
@@ -150,8 +153,5 @@ public class ServletModelAttributeMethodProcessor extends ModelAttributeMethodPr
 		ServletRequestDataBinder servletBinder = (ServletRequestDataBinder) binder;
 		servletBinder.bind(servletRequest);
 	}
-	
-	// Resolve the argument from the model or if not found instantiate it with its default if it is available
-	// ModelAttributeMethodProcessor: final Object resolveArgument(MethodParameter parameter,ModelAndViewContainer mavContainer,NativeWebRequest webRequest,WebDataBinderFactory binderFactory)
 
 }

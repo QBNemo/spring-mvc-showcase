@@ -900,8 +900,8 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 
 		// 调用modelFactory.updateModel(webRequest, mavContainer) :sessionAttributesHandler.storeAttributes / updateBindingResult(request, defaultModel);
 		// RequestContextUtils.getOutputFlashMap(request).putAll(flashAttributes);
-		// DefaultDataBinderFactory: WebDataBinder createBinder(NativeWebRequest webRequest, Object target, String objectName)
-		//                           initBinder(dataBinder, webRequest)调用Controller内@InitBinder注解的方法
+		// InitBinderDataBinderFactory[DefaultDataBinderFactory]: WebDataBinder createBinder(NativeWebRequest webRequest, Object target, String objectName)
+		// *                                                      void initBinder(dataBinder, webRequest)调用Controller内@InitBinder注解的方法
 		return getModelAndView(mavContainer, modelFactory, webRequest);
 	}
 
