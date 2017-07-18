@@ -32,6 +32,7 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.method.annotation.ModelAttributeMethodProcessor;
+import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.HandlerMapping;
 
 /**
@@ -149,5 +150,8 @@ public class ServletModelAttributeMethodProcessor extends ModelAttributeMethodPr
 		ServletRequestDataBinder servletBinder = (ServletRequestDataBinder) binder;
 		servletBinder.bind(servletRequest);
 	}
+	
+	// Resolve the argument from the model or if not found instantiate it with its default if it is available
+	// ModelAttributeMethodProcessor: final Object resolveArgument(MethodParameter parameter,ModelAndViewContainer mavContainer,NativeWebRequest webRequest,WebDataBinderFactory binderFactory)
 
 }
