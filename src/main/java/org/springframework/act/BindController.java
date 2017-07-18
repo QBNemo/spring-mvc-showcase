@@ -242,7 +242,13 @@ public class BindController {
 		ModelAndViewContainer : redirectMap: {OA3=OA3-test}, redirectMap的flashAttributes: {RA=RA-BindController-goredirect, OA2=OA2-BindController-goredirect}
 		*/
 	}
-
+	
+	@RequestMapping(value="/nullmv")
+	public ModelAndView nullmv() {
+		logger.error("nullmv");
+		// 状态码200; 响应头 Content-Length:"0"
+		return null;
+	}
 }
 
 class BeanValidator1 implements Validator{

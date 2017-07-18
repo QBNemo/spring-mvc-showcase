@@ -885,6 +885,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		}
         
 		// 处理返回值: BeanConfig
+		// ModelAndView  ModelAndViewMethodReturnValueHandler: void handleReturnValue(Object returnValue,MethodParameter returnType,ModelAndViewContainer mavContainer,NativeWebRequest webRequest)
 		// 对象                                       ModelAttributeMethodProcessor: void handleReturnValue(Object returnValue,MethodParameter returnType,ModelAndViewContainer mavContainer,NativeWebRequest webRequest)
 		// @ResponseBody RequestResponseBodyMethodProcessor: void handleReturnValue(Object returnValue,MethodParameter returnType,ModelAndViewContainer mavContainer,NativeWebRequest webRequest)
 		// String        ViewNameMethodReturnValueHandler: void handleReturnValue(Object returnValue,MethodParameter returnType,ModelAndViewContainer mavContainer,NativeWebRequest webRequest)
