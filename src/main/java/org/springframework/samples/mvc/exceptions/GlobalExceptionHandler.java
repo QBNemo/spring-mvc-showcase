@@ -35,7 +35,8 @@ public class GlobalExceptionHandler {
 		String calss = "NoUse";
 	}
 	
-	@InitBinder
+	@InitBinder("ABC")
+	// InitBinderDataBinderFactory: boolean isBinderMethodApplicable(HandlerMethod initBinderMethod, WebDataBinder binder) 决定是否运行
 	public void testCAIB(WebDataBinder binder) {
 		logger.error("GlobalExceptionHandler testCAIB: " + ActUtil.hashCode(binder));
 		binder.toString();

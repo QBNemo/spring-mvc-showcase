@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -34,6 +35,7 @@ public class SaController {
 	private final Log logger = LogFactory.getLog(getClass());
 	
 	@InitBinder("mojo")
+	// InitBinderDataBinderFactory: boolean isBinderMethodApplicable(HandlerMethod initBinderMethod, WebDataBinder binder) 决定是否运行 
 	// 存在同名模型对象就运行(反射生成的也行) 否则不运行 假如存在@ModelAttribute("mojo")方法，则每个处理器方法运行[]都执行
 	public void mojoIB(WebDataBinder binder){
 		Date now = new Date();
@@ -50,8 +52,8 @@ public class SaController {
 	
 	// method1,method2的参数Mojo in都是自动从模型对象取 @ModelAttribute("mojo")注解在于提供取值名称
 	@RequestMapping(value="/sa", method=RequestMethod.GET)
-	@ModelAttribute
-	public Mojo method1(Model model, @ModelAttribute("mojo") Mojo in, HttpServletRequest request) {
+	//@ModelAttribute // no need, ModelAttributeMethodProcessor auto add to model
+	public Mojo sa(Model model, @ModelAttribute("mojo") Mojo in, HttpServletRequest request) {
 		logger.error("sa");
 
 		HttpSession session = request.getSession(false);
@@ -67,8 +69,8 @@ public class SaController {
 	}
 	
 	@RequestMapping(value="/sa2", method=RequestMethod.GET)
-	@ModelAttribute
-	public Mojo method2(Model model, Mojo in, JavaBean bean, HttpServletRequest request) {
+	//@ModelAttribute // no need, ModelAttributeMethodProcessor auto add to model
+	public Mojo sa2(Model model, Mojo in, JavaBean bean, HttpServletRequest request) {
 		logger.error("sa2");
 		
 		Map<String, Object> map = model.asMap();

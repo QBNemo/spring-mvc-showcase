@@ -891,17 +891,22 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		// String        ViewNameMethodReturnValueHandler: void handleReturnValue(Object returnValue,MethodParameter returnType,ModelAndViewContainer mavContainer,NativeWebRequest webRequest)
 		//               如果是重定向视图名称: mavContainer.setRedirectModelScenario(true);
 		// 设置redirectModel: Object returnValue = invokeForRequest(webRequest, mavContainer, providedArgs);
+		
+		// 解析参数
 		// InvocableHandlerMethod: Object invokeForRequest(NativeWebRequest request, ModelAndViewContainer mavContainer,Object... providedArgs)
-		//                         Object[] args = getMethodArgumentValues(request, mavContainer, providedArgs) //调用@InitBinder注解的方法，并校验
+		//                         Object[] args = getMethodArgumentValues(request, mavContainer, providedArgs) -> //调用@InitBinder注解的方法，并校验
+		// ModelAttributeMethodProcessor: Object resolveArgument(MethodParameter parameter,ModelAndViewContainer mavContainer,NativeWebRequest webRequest,WebDataBinderFactory binderFactory)
+		// InitBinderDataBinderFactory[DefaultDataBinderFactory]: WebDataBinder createBinder(NativeWebRequest webRequest,Object target,String objectName)
+		//                                                        void initBinder(WebDataBinder binder,NativeWebRequest request)
 		invocableMethod.invokeAndHandle(webRequest, mavContainer);
 		if (asyncManager.isConcurrentHandlingStarted()) {
 			return null;
 		}
 
 		// 调用modelFactory.updateModel(webRequest, mavContainer) :sessionAttributesHandler.storeAttributes / updateBindingResult(request, defaultModel);
-		// RequestContextUtils.getOutputFlashMap(request).putAll(flashAttributes);
 		// InitBinderDataBinderFactory[DefaultDataBinderFactory]: WebDataBinder createBinder(NativeWebRequest webRequest, Object target, String objectName)
-		// *                                                      void initBinder(dataBinder, webRequest)调用Controller内@InitBinder注解的方法
+		//                                                        void initBinder(WebDataBinder binder,NativeWebRequest request)调用Controller内@InitBinder注解的方法
+		// RequestContextUtils.getOutputFlashMap(request).putAll(flashAttributes);
 		return getModelAndView(mavContainer, modelFactory, webRequest);
 	}
 
