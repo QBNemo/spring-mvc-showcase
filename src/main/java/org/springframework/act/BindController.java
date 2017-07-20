@@ -54,8 +54,8 @@ public class BindController {
 	
 	@ModelAttribute
 	// @ModelAttribute的value为"", 返回值名称为javaBeanList
-	public List<JavaBean> method0() {
-		logger.error("methodList");
+	public List<JavaBean> maList() {
+		logger.error("maList: {bean1, bean2}");
 		JavaBean bean1 = new JavaBean("b11", "b12", "b13");
 		JavaBean bean2 = new JavaBean("b21", "b22", "b23");
 		return Arrays.asList(new JavaBean[] {bean1, bean2});
@@ -63,23 +63,23 @@ public class BindController {
 	
 	@ModelAttribute
 	// 见ModelFactory的两个方法知MA方法的调用时机,给value赋值也更高效：initModel invokeModelAttributeMethods
-	public JavaBean method00() {
+	public JavaBean ma00() {
 		// 处理器方法前始终执行
-		logger.error("method00");
+		logger.error("ma00: javaBean");
 		JavaBean bean = new JavaBean("b00", "b00", "b00");
 		return bean;
 	}
 	
 	@ModelAttribute("javaBean1")
-	public JavaBean method01() {
-		logger.error("method01");
+	public JavaBean ma01() {
+		logger.error("ma01: javaBean1");
 		JavaBean bean = new JavaBean("01", "01", "01");
 		return bean;
 	}
 	
 	@ModelAttribute("javaBean2")
-	public JavaBean method02() {
-		logger.error("method02");
+	public JavaBean ma02() {
+		logger.error("ma02: javaBean2");
 		JavaBean bean = new JavaBean("02", "02", "02");
 		return bean;
 	}
@@ -260,7 +260,7 @@ class BeanValidator1 implements Validator{
 
 	@Override
 	public void validate(Object target, Errors errors) {
-		logger.error("BeanValidator1 validate");
+		logger.error("BeanValidator1 validate: " + target);
 		ValidationUtils.rejectIfEmpty(errors, "param1", "param1 is empty");	
 	}
 }
@@ -274,7 +274,7 @@ class BeanValidator2 implements Validator{
 
 	@Override
 	public void validate(Object target, Errors errors) {
-		logger.error("BeanValidator2 validate");
+		logger.error("BeanValidator2 validate: " + target);
 		ValidationUtils.rejectIfEmpty(errors, "param2", "param2 is empty");	
 	}
 }

@@ -894,7 +894,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		
 		// 解析参数
 		// InvocableHandlerMethod: Object invokeForRequest(NativeWebRequest request, ModelAndViewContainer mavContainer,Object... providedArgs)
-		//                         Object[] args = getMethodArgumentValues(request, mavContainer, providedArgs) -> //调用@InitBinder注解的方法，并校验
+		//                         Object[] args = getMethodArgumentValues(request, mavContainer, providedArgs) -> //调用@InitBinder注解的方法
 		// ModelAttributeMethodProcessor: Object resolveArgument(MethodParameter parameter,ModelAndViewContainer mavContainer,NativeWebRequest webRequest,WebDataBinderFactory binderFactory)
 		// InitBinderDataBinderFactory[DefaultDataBinderFactory]: WebDataBinder createBinder(NativeWebRequest webRequest,Object target,String objectName)
 		//                                                        void initBinder(WebDataBinder binder,NativeWebRequest request)
@@ -905,7 +905,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 
 		// 调用modelFactory.updateModel(webRequest, mavContainer) :sessionAttributesHandler.storeAttributes / updateBindingResult(request, defaultModel);
 		// InitBinderDataBinderFactory[DefaultDataBinderFactory]: WebDataBinder createBinder(NativeWebRequest webRequest, Object target, String objectName)
-		//                                                        void initBinder(WebDataBinder binder,NativeWebRequest request)调用Controller内@InitBinder注解的方法
+		//                                                        void initBinder(WebDataBinder binder,NativeWebRequest request)
 		// RequestContextUtils.getOutputFlashMap(request).putAll(flashAttributes);
 		return getModelAndView(mavContainer, modelFactory, webRequest);
 	}
