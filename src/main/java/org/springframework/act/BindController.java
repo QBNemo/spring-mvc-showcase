@@ -40,7 +40,6 @@ public class BindController {
 	private final Log logger = LogFactory.getLog(getClass());
 	
 	@InitBinder("javaBean1")
-	// 存在同名模型对象就运行(反射生成的也行) 否则不运行 假如存在@ModelAttribute("javaBean1")方法，则每个处理器方法运行[]都执行
 	public void initBinder1(WebDataBinder binder){
 		logger.error("initBinder1 : " + ActUtil.hashCode(binder));
 		binder.setValidator(new BeanValidator1());
